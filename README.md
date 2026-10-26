@@ -1,62 +1,60 @@
 # History in a Glimpse
 
-Native JavaFX history demo. Open this folder as a Maven project in IntelliJ,
-select JDK 17 or newer, reload Maven and run org.example.historyinaglimpse.Launcher.
-Alternatively run mvnw.cmd javafx:run on Windows.
+JavaFX desktop history explorer with a Spring Boot backend and private Supabase media storage.
 
-The horizontally scrollable chart contains 62 entries in history and archaeology.
-The variable time scale is marked on the chart. Biblical genealogy and mythology
-are excluded. The splash screen credits Sebastian C. Adams and his Synchronological Chart
-of Universal History as the visual inspiration. Event dates, descriptions and references are included in the story screens.
+## Open and run
 
-## Illustrated character animation
+1. Extract this ZIP into a NEW folder. Open its **HistoryInAGlimpse** folder in IntelliJ. Do not paste this whole project inside the old animation-backend folder.
+2. Reload the root pom.xml. Link animation-backend/pom.xml as a Maven project if IntelliJ does not show it.
+3. Use your JDK 25 (backend requires Java 21 or newer).
+4. Set **SUPABASE_SECRET_KEY** in the backend run configuration to your existing secret. Credentials are not included in this download.
+5. Run **AnimationBackendApplication**. Keep it running.
+6. Run **Launcher** in package **org.example.historyinaglimpse** for the desktop.
 
-Click Stone Age life to open the hunter-gatherer family animation. The mother and
-child raise food to their mouths, lower their hands and share food. The standing
-girl changes her gaze and arm position. Each person has an individual ImageView and an independent pose transition.
-The father reaches toward the roast, the mother eats berries, the child reaches
-for food and eats, and the girl turns her head and adjusts her arms. The fire
-has its own faster flame sequence. The fixed background fills the animation
-pane. This is an illustrated pose animation, not a realistic generated video. The camp has its own birds-and-fire ambience, without
-footsteps or crowd chatter. The Narration toggle button remains off by default.
+The backend listens on http://127.0.0.1:8080. Change the desktop backend address with JVM option `-Dhistory.animation.backend=http://127.0.0.1:8080` only if necessary.
 
-The Phoenician seafaring story also has a layered illustrated animation: a merchant
-walks along the quay and a separate boat sails and rocks on the water.
+## Cloud scenes
 
-Animations open first and start automatically. Era map is the second tab;
-selecting it pauses playback. Returning resumes it. Playback starts automatically; returning to the chart stops it. The Illustration tab and manual Play/Pause controls have been removed.
-The simple geometric figure scenes from the previous version have been removed.
-Other stories currently retain their still artwork; they have not yet received
-this illustrated character treatment. Stone tools, publishing still life and
-text-only date plates remain silent.
+Stone Age, Early Farming, Sumerian urban period, Old Kingdom, Indus Valley, Akkadian Empire, and Middle Kingdom download images through the backend. The four supplied ancient maps load through the backend too. These files are intentionally absent from the Java project. No upload-assets folder is included.
 
-## Maps and sound
+Keep the **animation-assets** bucket private. For the five new era folders, use:
 
-All entries have sourced regional geographic context maps. Persia and the long
-Roman-period entry also have explicitly dated territorial snapshots. Other maps
-are geographic locators, not historical territorial reconstructions.
+| Folder | Expected files |
+| --- | --- |
+| sumerian-urban | background.png, actors.png, ambience.mp3 (or original ambience.wav) |
+| egypt-old-kingdom | background.png, actors.png, map.png, ambience.mp3 (or original ambience.wav) |
+| indus-valley | background.png, actors.png, map.png, ambience.mp3 (or original ambience.wav) |
+| akkadian-empire | background.png, actors.png, map.png, ambience.mp3 (or original ambience.wav) |
+| egypt-middle-kingdom | background.png, actors.png, map.png, ambience.mp3 (or original ambience.wav) |
 
-## Verification
+The folders sit directly inside the bucket, beside stone-age and early-farming. Keep the exact spelling, including **middle** and **sumerian**.
 
-Delivered Java source compiled against JavaFX 21.0.6 with JDK 17. Headless JavaFX
-checks verify animation opens first, starts automatically, changes rendered pixels,
-pauses for the map and resumes when returning. Independent-family preview frames were
-captured from the running JavaFX application. Audible device output and Windows
-speech still require a local test. A separate Independent_Family_Preview.mp4 accompanies this project download.
+Early Farming uses early-farming/farming-ambience.mp3. Stone Age keeps stone-age/stone-age-birds.mp3.
 
-## Inspiration
+The new audio endpoint prefers ambience.mp3 for the original database ambience.wav setting. It falls back to WAV only if the MP3 is missing. Do not rename an MP3 extension to WAV. Sound loops and volume controls remain available; narration is optional through Description.
 
-https://www.worldhistorycharts.com/adams-synchronological-chart-or-map-of-history/
+## Database setup
 
-Individual playback was verified in a running headless JavaFX application:
-pausing only the father left the child moving. All five actors have distinct
-cycle durations and phase offsets. Map navigation pauses all five and resumes
-them on return. The app remains JavaFX; no Spring Boot backend was added.
 
-The app opens on the splash screen. Select Explore history (or press Enter) to
-open the chart. The window title and chart toolbar use History in a Glimpse.
-The main application class is HistoryInAGlimpseApplication; Launcher still works.
+No private media or historical scene data is deleted from Supabase by this project cleanup. The backend uses metadata in public.animation_scenes and private object paths.
 
-Project name, Maven artifact, Java package and module are now HistoryInAGlimpse
-(org.example.historyinaglimpse). The Narration button toggles optional speech;
-only Animation/Scene and Era map tabs are shown.
+Example backend checks:
+- http://localhost:8080/api/era-scenes/sumerian-urban (JSON)
+- http://localhost:8080/api/era-scenes/sumerian-urban/background (PNG)
+- http://localhost:8080/api/era-scenes/sumerian-urban/audio (your audio)
+- http://localhost:8080/api/era-scenes/egypt-old-kingdom/map (PNG)
+
+## What remains local
+
+The timeline layout and history TSV files are still used locally; the separate history-database work has not replaced them. Shared illustration atlases, Phoenician animation layers, Persian/Roman maps, and sounds for other scenes are also still in use. They are kept so those parts continue working. Moving all remaining media to cloud storage would require a separate migration.
+
+## Repair and validation
+
+See docs/CLEANUP.md for changes and checks. See docs for artwork credits, map sources, dates, and history editing guidance.
+
+The ZIP is a clean source export. Repository history, repository backup ZIPs, IDE caches and compiled target folders are omitted. Your original project is not changed by extracting this download; keep it until this copy works on your computer.
+
+## Cloud content and cleanup
+Historical media live in the private Supabase animation-assets bucket. Royal Society and Newton background prose is in animation_scenes.settings.history. Their timeline labels remain in the small chart resources. JavaFX classes remain required to render and animate the content.
+
+Setup SQL is retained outside the source project with the update package. The app does not read SQL scripts at runtime. Obsolete local harbor artwork, the old harbor renderer/audio, and superseded Rome/Persia map images have been removed. Other local atlases, sounds and map geography are still used by entries not yet migrated.

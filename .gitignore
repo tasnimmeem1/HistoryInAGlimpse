@@ -1,2 +1,13 @@
-# Project exclude paths
-/target/
+target/
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+.git.zip
+
+.vscode/
+update-backups/
+history-*-backup-*/
+*.bak
+*.disabled-*

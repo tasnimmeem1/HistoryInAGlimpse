@@ -1,0 +1,41 @@
+{
+  "atlasResource": "/scene-fixes/boat.png",
+  "atlasWidth": 2172,
+  "atlasHeight": 724,
+  "atlasColumns": 5,
+  "sourceImage": false,
+  "actors": [
+    {
+      "name": "river-boat",
+      "rowTop": 0,
+      "rowEnd": 724,
+      "x": 300,
+      "y": 490,
+      "height": 140,
+      "cycleSeconds": 24,
+      "poseCycleSeconds": 2.2,
+      "phaseSeconds": 0,
+      "swayDegrees": 0,
+      "animatePoses": true,
+      "travelX": 180,
+      "oneWay": true,
+      "bobY": 0.6,
+      "motionRegions": [
+        {
+          "x": 0.05,
+          "y": 0,
+          "width": 0.92,
+          "height": 0.76
+        }
+      ]
+    }
+  ],
+  "backgroundResource": "/scene-fixes/babylon-background.png",
+  "water": {
+    "x": 0,
+    "y": 485,
+    "width": 1000,
+    "height": 182
+  },
+  "atmosphere": []
+}

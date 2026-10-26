@@ -5,7 +5,7 @@ try {
     $voice.SetOutputToDefaultAudioDevice()
     $voice.Rate = -1
     $voice.Volume = 85
-    $story = $env:HISTORY_STORY
+    $story = $env:ADAMS_STORY
     Write-Output 'READY'
     while ($null -ne ($command = [Console]::ReadLine())) {
         switch ($command) {

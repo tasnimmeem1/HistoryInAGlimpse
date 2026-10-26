@@ -13,9 +13,3 @@ Windows narration and audible hardware output still need a local check.
 
 Rename verification: window title, splash creator credit, Explore history entry,
 and independent animation/map navigation passed in JavaFX after the rename.
-
-UI cleanup verification: Illustration tab and Play/Pause buttons removed.
-Narration toggle changes playback state. The two tabs remain Animation/Scene
-first, Era map second, with automatic playback and map pause. Camp, harbor and
-stone-tools screens opened in the renamed org.example.historyinaglimpse module.
-All source compiled; audible Windows speech remains a local-only check.

@@ -1,9 +1,9 @@
 module org.example.historyinaglimpse {
     requires javafx.controls;
-    requires javafx.fxml;
+    requires javafx.media;
     requires java.desktop;
+    requires com.fasterxml.jackson.databind;
 
 
-    opens org.example.historyinaglimpse to javafx.fxml;
     exports org.example.historyinaglimpse;
 }

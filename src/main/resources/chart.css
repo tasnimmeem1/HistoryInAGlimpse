@@ -3,6 +3,7 @@
 .tool-bar { -fx-background-color: #ead8b8; -fx-padding: 12px; -fx-spacing: 8px; }
 .button { -fx-background-color: #fff8e9; -fx-border-color: #c5a77c; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-cursor: hand; }
 .button:hover { -fx-background-color: #e7cfa5; }
+#description-button:narrating { -fx-background-color: #d5dfc5; -fx-border-color: #6c8055; }
 .title { -fx-font-size: 23px; -fx-font-weight: bold; }
 .story-title { -fx-font-size: 32px; -fx-font-weight: bold; }
 .scroll-pane, .scroll-pane > .viewport { -fx-background-color: #f3e8d2; }
@@ -17,5 +18,3 @@
 .splash-credit { -fx-font-size: 23px; -fx-font-weight: bold; }
 .splash-enter { -fx-background-color: #46553f; -fx-text-fill: #fff7e5; -fx-font-size: 22px; -fx-padding: 14px 35px; -fx-background-radius: 6; }
 .splash-enter:hover { -fx-background-color: #5d6a50; }
-.toggle-button { -fx-background-color: #fff8e9; -fx-text-fill: #493728; -fx-border-color: #c5a77c; -fx-border-radius: 4; -fx-background-radius: 4; -fx-cursor: hand; }
-.toggle-button:selected { -fx-background-color: #46553f; -fx-text-fill: #fff7e5; }

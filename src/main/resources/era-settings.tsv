@@ -59,4 +59,29 @@
 58	South Asia	South Asian political and cultural periods included distinct dynasties and centers. Mughal, Gupta and Mauryan territories were different; this map shows their regional setting.	78,25,South Asia
 59	Low Countries	Medieval towns of the Low Countries produced and exchanged textiles. This is a regional context, not one precisely dated founding event.	4.4,51,Low Countries
 60	Italian cities	Fifteenth-century Italian workshops served varied patrons. Florence and other cities contributed to Renaissance painting and portraiture.	11.3,43.8,Florence / Italy
-61	Historical publishing	Sebastian Adams’ historical chart is an American publication highlighted by the David Rumsey collection. Its content covers many parts of the world.	-123,45,Approximate regional context
+61	Akkadian Mesopotamia	Approximate geographic context of Akkadian expansion; markers show places, not precise borders.	44.4,33.3,Mesopotamia;46.1,31.3,Ur;44.4,32.5,Kish
+62	Hittite kingdom and empire	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	34.62,40.02,Hattusha;38.02,36.83,Carchemish;36.52,34.56,Kadesh
+63	Ghana / Wagadu Empire	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	-10.8,15.7,Western Sahel;-8.0,14.0,Upper Niger region
+64	Mali Empire	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	-4.5,14.0,Middle Niger region;-3.01,16.77,Timbuktu;-4.56,13.9,Jenne
+65	Songhay Empire	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	-0.05,16.27,Gao;-3.01,16.77,Timbuktu;-4.0,14.0,Niger River region
+66	Khmer / Angkor Empire	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	103.86,13.41,Angkor;104.92,11.56,Lower Mekong region
+67	Aztec Triple Alliance	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	-99.13,19.43,Tenochtitlan;-98.88,19.51,Texcoco;-99.19,19.46,Tlacopan
+68	Inca imperial expansion	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	-71.97,-13.52,Cuzco;-78.51,-7.16,Cajamarca;-78.5,-0.18,Northern Andes
+69	Tokugawa shogunate	Geographic orientation. Markers identify selected places; coastlines use Natural Earth and are not reconstructed historical borders.	139.69,35.68,Edo;135.77,35.01,Kyoto;135.5,34.69,Osaka
+70	Hattusha becomes the Hittite capital	Geographic context for this event; markers show selected places, not borders.	34.62,40.02,Hattusha;38.02,36.83,Carchemish;36.52,34.56,Kadesh
+71	Fall of Tenochtitlan	Geographic context for this event; markers show selected places, not borders.	-99.13,19.43,Tenochtitlan;-98.88,19.51,Texcoco;-99.19,19.46,Tlacopan
+72	Spanish conquest period begins in the Andes	Geographic context for this event; markers show selected places, not borders.	-71.97,-13.52,Cuzco;-78.51,-7.16,Cajamarca;-78.5,-0.18,Northern Andes
+73	Tokugawa Ieyasu appointed shogun	Geographic context for this event; markers show selected places, not borders.	139.69,35.68,Edo;135.77,35.01,Kyoto;135.5,34.69,Osaka
+74	Wright brothers powered flight	Selected geographic context; markers identify places associated with this event, not territorial borders.	-75.67,36.02,Kill Devil Hills
+75	First World War	Selected geographic context; markers identify places associated with this event, not territorial borders.	2.35,48.86,Paris;13.4,52.52,Berlin;28.98,41.01,Istanbul
+76	Second World War	Selected geographic context; markers identify places associated with this event, not territorial borders.	21.01,52.23,Warsaw;13.4,52.52,Berlin;139.69,35.68,Tokyo
+77	United Nations established	Selected geographic context; markers identify places associated with this event, not territorial borders.	-122.42,37.77,San Francisco;-73.97,40.75,United Nations headquarters
+78	Apollo 11 Moon landing	Selected geographic context; markers identify places associated with this event, not territorial borders.	-80.65,28.57,Kennedy Space Center;-95.09,29.55,Johnson Space Center
+79	Web software released freely	Selected geographic context; markers identify places associated with this event, not territorial borders.	6.05,46.23,CERN
+80	Human Genome Project completed	Selected geographic context; markers identify places associated with this event, not territorial borders.	-77.1,38.99,Bethesda;0.2,52.08,Hinxton
+81	COVID-19 characterized as pandemic	Selected geographic context; markers identify places associated with this event, not territorial borders.	6.13,46.23,WHO headquarters in Geneva
+82	September 11 attacks	Selected geographic context; markers identify places associated with this event, not territorial borders.	-74.01,40.71,World Trade Center;-77.06,38.87,Pentagon;-78.9,40.05,Flight 93 Memorial
+83	Ghana gains independence	Selected geographic context; markers identify places associated with this event, not territorial borders.	-0.2,5.56,Accra
+84	Global financial crisis intensifies	Selected geographic context; markers identify places associated with this event, not territorial borders.	-74.01,40.71,New York;-0.13,51.51,London
+85	United States Civil Rights Act	Selected geographic context; markers identify places associated with this event, not territorial borders.	-77.04,38.91,Washington DC
+86	Early computer operation	Illustrative early computer hardware.	-75.193,39.952,Philadelphia

@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 /** Uses the installed Windows speech engine; no browser, API key or network. */
 final class WindowsNarrator implements AutoCloseable {
     private final ExecutorService worker = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r, "history-narrator"); t.setDaemon(true); return t;
+        Thread t = new Thread(r, "adams-narrator"); t.setDaemon(true); return t;
     });
     private final Consumer<String> status;
     private final String story;
@@ -36,7 +36,7 @@ final class WindowsNarrator implements AutoCloseable {
                     }
                     ProcessBuilder builder = new ProcessBuilder("powershell.exe", "-NoProfile", "-NonInteractive",
                         "-Command", speechScript).redirectErrorStream(true);
-                    builder.environment().put("HISTORY_STORY", story);
+                    builder.environment().put("ADAMS_STORY", story);
                     process = builder.start();
                     commands = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8));
                     Thread output = new Thread(() -> {
@@ -50,7 +50,7 @@ final class WindowsNarrator implements AutoCloseable {
                         } catch (IOException | InterruptedException ex) {
                             if (!closed) report("Voice playback stopped unexpectedly.");
                         }
-                    }, "history-voice-status");
+                    }, "adams-voice-status");
                     output.setDaemon(true); output.start();
                 }
                 commands.write(command); commands.newLine(); commands.flush();

@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /** Loads a bundled soundscape off the UI thread and keeps pause/resume positions. */
-final class EnvironmentAudio implements AutoCloseable {
+final class EnvironmentAudio implements AmbientAudio {
     private final ExecutorService worker = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r, "adams-scene-sound"); thread.setDaemon(true); return thread;
     });
@@ -21,7 +21,7 @@ final class EnvironmentAudio implements AutoCloseable {
 
     EnvironmentAudio(String name, Consumer<String> status) { this.name=name; this.status=status; }
 
-    void play() {
+    public void play() {
         if (closed) return;
         worker.execute(() -> {
             if (closed) return;
@@ -41,11 +41,11 @@ final class EnvironmentAudio implements AutoCloseable {
             }
         });
     }
-    void pause() {
+    public void pause() {
         if (closed) return;
         worker.execute(() -> { if (!closed && clip != null) clip.stop(); });
     }
-    void setVolume(double value) {
+    public void setVolume(double value) {
         if (closed) return;
         worker.execute(() -> { volume=Math.max(0,Math.min(1,value)); if (!closed) applyVolume(); });
     }

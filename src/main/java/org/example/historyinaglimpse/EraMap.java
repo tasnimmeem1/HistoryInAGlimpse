@@ -4,8 +4,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -21,29 +19,25 @@ final class EraMap {
     private static final List<double[]> LAND = loadLand();
     static VBox create(HistoricalEvent event, Consumer<String> openReference) {
         int index = EventCatalog.EVENTS.indexOf(event);
+        String sceneId = CloudEraCatalog.sceneId(event);
+        if (!sceneId.isBlank() && !sceneId.equals("sumerian-urban")) return CloudEraMap.create(sceneId);
         String[] setting = setting(index);
         Label heading = label(setting[1] + " · " + event.date());
         heading.setStyle("-fx-font-size: 23px; -fx-font-weight: bold;");
         VBox box = new VBox(12, heading);
         box.setMinWidth(0);
         box.setStyle("-fx-padding: 20; -fx-background-color: #efdfbb;");
-        if (index == 52 || index == 24) {
-            boolean persia = index == 52;
-            String stem = persia ? "persia-500bce" : "rome-117ce";
-            box.getChildren().add(label(persia ? "Historical snapshot: approximately 500 BCE" : "Historical snapshot: 117 CE · the united Roman Empire"));
-            ImageView map = new ImageView(new Image(EraMap.class.getResource("/maps/" + stem + ".png").toExternalForm()));
-            map.setPreserveRatio(true); map.fitWidthProperty().bind(box.widthProperty().subtract(40));
-            box.getChildren().addAll(map, label(persia
-                ? "A reconstruction within the Achaemenid period, not its founding extent in 550 BCE. Ancient frontiers are approximate."
-                : "This snapshot predates the later division into eastern and western administrations. It is not a map of the western empire in 476 CE."));
-            box.getChildren().add(label(persia ? "Anton Gutsunaev and Uirauna · CC BY-SA 3.0 · SVG rendered to PNG."
-                : "ArdadN · public domain · SVG rendered to PNG."));
-            link(box, "Map source and attribution", "https://commons.wikimedia.org/wiki/File:" + (persia ? "Achaemenid_Empire_En.svg" : "RomanEmpire_117.svg"), openReference);
-            if (persia) link(box,"Map license: CC BY-SA 3.0","https://creativecommons.org/licenses/by-sa/3.0/",openReference);
-        }
         box.getChildren().add(label("Geographic context · approximate place locations"));
         Canvas canvas = new Canvas(760, 390);
-        box.getChildren().addAll(canvas, label(setting[2]), label("Physical coastlines: Natural Earth, 1:50 million. Present-day geography provides orientation; ancient shorelines may differ. Markers are places or regions, not borders or territorial claims."));
+        javafx.scene.Group mapGroup = new javafx.scene.Group(canvas);
+        javafx.scene.control.ScrollPane mapScroll = new javafx.scene.control.ScrollPane(new javafx.scene.Group(mapGroup));
+        mapScroll.setPannable(true); mapScroll.setPrefViewportHeight(410);
+        javafx.scene.control.Slider zoom = new javafx.scene.control.Slider(1, 4, 1);
+        zoom.setPrefWidth(180);
+        zoom.valueProperty().addListener((o, a, b) -> { mapGroup.setScaleX(b.doubleValue()); mapGroup.setScaleY(b.doubleValue()); });
+        javafx.scene.control.Button reset = new javafx.scene.control.Button("Reset map");
+        reset.setOnAction(e -> { zoom.setValue(1); mapScroll.setHvalue(0); mapScroll.setVvalue(0); });
+        box.getChildren().addAll(new javafx.scene.layout.HBox(12, label("Map zoom"), zoom, reset), mapScroll, label(setting[2]), label("Physical coastlines: Natural Earth, 1:50 million. Present-day geography provides orientation; ancient shorelines may differ. Markers are places or regions, not borders or territorial claims."));
         canvas.widthProperty().bind(box.widthProperty().subtract(40));
         canvas.widthProperty().addListener((o,a,b) -> draw(canvas, setting));
         draw(canvas, setting);

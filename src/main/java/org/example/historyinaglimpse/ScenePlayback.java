@@ -6,9 +6,10 @@ import java.util.function.Consumer;
 /** One scene lifecycle controls figures, ambient sound and optional descriptive voice. */
 final class ScenePlayback implements AutoCloseable {
     private final HistoricalEvent event;
+    private String description;
     private final Animation animation;
     private final Consumer<String> status;
-    private final EnvironmentAudio environment;
+    private final AmbientAudio environment;
     private final String soundLabel;
     private WindowsNarrator narrator;
     private boolean narrationPlaying;
@@ -17,13 +18,23 @@ final class ScenePlayback implements AutoCloseable {
     private double volume=.65;
 
     ScenePlayback(HistoricalEvent event, Animation animation, Consumer<String> status) {
-        this.event=event; this.animation=animation; this.status=status;
+        this.event=event; this.description=event.description(); this.animation=animation; this.status=status;
         var setting=Soundscapes.forEvent(event);
-        environment=setting.file().isBlank() ? null : new EnvironmentAudio(setting.file(),status); soundLabel=setting.label();
+        String cloudId = CloudEraCatalog.sceneId(event);
+        environment = !cloudId.isBlank()
+                ? new CloudBirdAudio(status, "/api/era-scenes/" + cloudId + "/audio")
+                : setting.file().isBlank() ? null
+                : setting.file().equals("cloud-birds") ? new CloudBirdAudio(status)
+                : setting.file().equals("cloud-farming") ? new CloudBirdAudio(status, "/api/scenes/early-farming/audio")
+                : new EnvironmentAudio(setting.file(), status);
+        soundLabel = !cloudId.isBlank() ? "Scene ambience" : setting.label();
         soundsEnabled=environment != null;
-        status.accept("Open the scene for " + soundLabel.toLowerCase() + ". Narration is optional.");
+        status.accept("Open the scene for " + soundLabel.toLowerCase() + ". Description voice is optional.");
     }
+    void setDescription(String value) { description=value; }
+    boolean hasDescription() { return !description.isBlank(); }
     boolean isPaused() { return paused; }
+    boolean isNarrationEnabled() { return narrationEnabled; }
     void setActive(boolean value) { active=value; refresh(); }
     void setPaused(boolean value) { paused=value; refresh(); }
     void setSoundsEnabled(boolean value) { soundsEnabled=value && environment != null; refresh(); }
@@ -43,7 +54,8 @@ final class ScenePlayback implements AutoCloseable {
         }
         if (playing && narrationEnabled) {
             if (narrator == null) {
-                narrator=new WindowsNarrator(status,event.title()+". "+event.date()+". "+event.description());
+                narrator=new WindowsNarrator(status,event.title()+". "+event.date()+". "+description
+                    +(CloudEraCatalog.sceneId(event).equals("sumerian-urban") ? " "+CloudEraCatalog.sumerianHistory() : ""));
                 narrator.command("START"); narrationPlaying=true;
             } else if (!narrationPlaying) { narrator.command("PLAY"); narrationPlaying=true; }
         } else if (narrator != null) {
@@ -52,7 +64,7 @@ final class ScenePlayback implements AutoCloseable {
         }
         status.accept(!active ? "Era map · choose the scene tab to explore the illustration." :
             paused ? "Scene paused" : environment == null ? soundLabel : soundsEnabled ? soundLabel :
-            narrationEnabled ? "Narration selected" : "Scene sounds off");
+            narrationEnabled ? "Description voice selected" : "Scene sounds off");
     }
     @Override public void close() {
         if (closed) return;
