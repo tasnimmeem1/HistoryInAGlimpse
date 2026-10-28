@@ -1,4 +1,4 @@
--- User accounts for History in a Glimpse (Member 2).
+-- User accounts for History in a Glimpse.
 -- Run once in the Supabase SQL editor. Only the backend reads this table,
 -- using the secret key, so row level security stays on with no policies.
 

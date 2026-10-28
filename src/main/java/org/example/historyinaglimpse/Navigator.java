@@ -90,11 +90,10 @@ public final class Navigator {
     }
 
     /** Stand-in for a screen a teammate has not built yet. */
-    public static Node placeholder(String title, String owner) {
+    public static Node placeholder(String title) {
         Label heading = new Label(title);
         heading.getStyleClass().add("form-title");
-        Label body = new Label(owner + " will build this screen. Register it with Navigator.addScreen(...) "
-                + "in HistoryInAGlimpseApplication.registerFeatures().");
+        Label body = new Label("This screen is coming soon.");
         body.setWrapText(true);
         body.getStyleClass().add("form-hint");
         VBox card = new VBox(16, heading, body);

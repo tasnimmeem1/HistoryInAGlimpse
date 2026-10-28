@@ -247,13 +247,13 @@ public class HistoryInAGlimpseApplication extends Application {
                 Role.GUEST, this::showChart));
         navigator.addScreen("stories", "Shared stories",
                 "Read, search and share stories with tags and timestamps.",
-                Role.USER, () -> Navigator.placeholder("Shared stories", "Member 4"));
+                Role.USER, () -> Navigator.placeholder("Shared stories"));
         navigator.addScreen("saved", "Saved history & reports",
                 "Bookmarks, saved selections, and reports you can preview and export.",
-                Role.USER, () -> Navigator.placeholder("Saved history & reports", "Member 5"));
+                Role.USER, () -> Navigator.placeholder("Saved history & reports"));
         navigator.addScreen("admin", "Manage accounts",
                 "Review users and moderate shared stories.",
-                Role.ADMIN, () -> Navigator.placeholder("Manage accounts", "Member 2"));
+                Role.ADMIN, () -> Navigator.placeholder("Manage accounts"));
     }
 
     private Button button(String text, Runnable action) {
