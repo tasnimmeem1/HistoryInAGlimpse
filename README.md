@@ -58,3 +58,32 @@ The ZIP is a clean source export. Repository history, repository backup ZIPs, ID
 Historical media live in the private Supabase animation-assets bucket. Royal Society and Newton background prose is in animation_scenes.settings.history. Their timeline labels remain in the small chart resources. JavaFX classes remain required to render and animate the content.
 
 Setup SQL is retained outside the source project with the update package. The app does not read SQL scripts at runtime. Obsolete local harbor artwork, the old harbor renderer/audio, and superseded Rome/Persia map images have been removed. Other local atlases, sounds and map geography are still used by entries not yet migrated.
+
+## Accounts and navigation
+
+The app opens on the splash screen, then the login screen. People can log in, create an account, or continue as a guest. After that the main menu lists every feature, and each feature is locked to a minimum role:
+
+| Role | Who | Can use |
+| --- | --- | --- |
+| GUEST | not logged in | timeline |
+| USER | anyone who registers | timeline, shared stories, saved history and reports |
+| ADMIN | promoted in the database | everything, plus account management |
+
+One-time database setup: run `sql/app_users.sql` in the Supabase SQL editor. To make an admin, register normally, then run `update public.app_users set role = 'ADMIN' where username = '...';`.
+
+Backend endpoints (all JSON):
+- `POST /api/auth/register` with `{"username", "displayName", "password"}`
+- `POST /api/auth/login` with `{"username", "password"}`, returns `{"token", "user"}`
+- `POST /api/auth/logout` and `GET /api/auth/me`, both with `Authorization: Bearer <token>`
+
+Logins are kept in the backend's memory, so restarting the backend logs everyone out.
+
+### Adding your screen
+
+1. Build your screen as any JavaFX `Node`.
+2. In `HistoryInAGlimpseApplication.registerFeatures()`, replace your placeholder:
+   `navigator.addScreen("stories", "Shared stories", "Short description", Role.USER, StoryListView::new);`
+   Your screen gets the shared toolbar with a Main menu button.
+3. Call the backend with `ApiClient.get(...)` and `ApiClient.post(...)`. They add the logged-in user's token for you. Run the calls through `Session.async(...)` so the window doesn't freeze.
+4. On the backend, protect an endpoint by taking the `Authorization` header and calling `authService.requireRole(header, Role.USER)`.
+5. Style with the classes in `chart.css` (`form-card`, `form-title`, `primary-button`, and others). The colors are defined once at the top of that file.

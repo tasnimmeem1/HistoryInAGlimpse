@@ -1,20 +1,67 @@
-.root { -fx-font-family: 'Georgia'; -fx-font-size: 15px; -fx-background-color: #f3e8d2; -fx-text-fill: #493728; }
-.label { -fx-text-fill: #493728; }
-.tool-bar { -fx-background-color: #ead8b8; -fx-padding: 12px; -fx-spacing: 8px; }
-.button { -fx-background-color: #fff8e9; -fx-border-color: #c5a77c; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-cursor: hand; }
-.button:hover { -fx-background-color: #e7cfa5; }
-#description-button:narrating { -fx-background-color: #d5dfc5; -fx-border-color: #6c8055; }
+/* Shared theme for every screen. Change the palette here to restyle the whole app. */
+.root {
+    -hg-parchment: #f3e8d2;      /* page background */
+    -hg-paper: #fff8e9;          /* buttons, cards, fields */
+    -hg-paper-warm: #fff4da;
+    -hg-sand: #ead8b8;           /* toolbars */
+    -hg-sand-hover: #e7cfa5;
+    -hg-ink: #493728;            /* body text */
+    -hg-ink-soft: #705d43;
+    -hg-border: #c5a77c;
+    -hg-border-dark: #aa8956;
+    -hg-green: #46553f;          /* primary action */
+    -hg-green-hover: #5d6a50;
+    -hg-green-text: #3d4c39;
+    -hg-on-green: #fff7e5;
+    -hg-error: #a33d22;
+    -hg-notice-bg: #d5dfc5;
+    -hg-notice-border: #6c8055;
+
+    -fx-font-family: 'Georgia'; -fx-font-size: 15px; -fx-background-color: -hg-parchment; -fx-text-fill: -hg-ink;
+}
+.label { -fx-text-fill: -hg-ink; }
+.tool-bar { -fx-background-color: -hg-sand; -fx-padding: 12px; -fx-spacing: 8px; }
+.button { -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-cursor: hand; }
+.button:hover { -fx-background-color: -hg-sand-hover; }
+#description-button:narrating { -fx-background-color: -hg-notice-bg; -fx-border-color: -hg-notice-border; }
 .title { -fx-font-size: 23px; -fx-font-weight: bold; }
 .story-title { -fx-font-size: 32px; -fx-font-weight: bold; }
-.scroll-pane, .scroll-pane > .viewport { -fx-background-color: #f3e8d2; }
+.scroll-pane, .scroll-pane > .viewport { -fx-background-color: -hg-parchment; }
 .garden { -fx-background-color: linear-gradient(to bottom, #f4e6c9 0%, #d6d4ad 65%, #b6b88b 66%, #e5d3ac 100%); }
 .original-chart { -fx-background-color: linear-gradient(to bottom, #f7ecd4, #e7d3ad); }
-.era-card { -fx-background-color: #fff4da; -fx-padding: 12; -fx-border-color: #9b7852; -fx-border-radius: 6; -fx-background-radius: 6; }
+.era-card { -fx-background-color: -hg-paper-warm; -fx-padding: 12; -fx-border-color: #9b7852; -fx-border-radius: 6; -fx-background-radius: 6; }
 .era-card:hover { -fx-background-color: #f1dbb2; }
 .splash-root { -fx-background-color: linear-gradient(to bottom right, #d6bb8b, #f2e4c8, #c9aa78); }
-.splash-card { -fx-background-color: rgba(255, 248, 231, 0.94); -fx-background-radius: 10; -fx-border-color: #aa8956; -fx-border-radius: 10; -fx-border-width: 2; }
-.splash-title { -fx-font-family: 'Times New Roman'; -fx-font-size: 68px; -fx-font-weight: bold; -fx-text-fill: #3d4c39; }
-.splash-subtitle { -fx-font-size: 21px; -fx-text-fill: #705d43; }
+.splash-card { -fx-background-color: rgba(255, 248, 231, 0.94); -fx-background-radius: 10; -fx-border-color: -hg-border-dark; -fx-border-radius: 10; -fx-border-width: 2; }
+.splash-title { -fx-font-family: 'Times New Roman'; -fx-font-size: 68px; -fx-font-weight: bold; -fx-text-fill: -hg-green-text; }
+.splash-subtitle { -fx-font-size: 21px; -fx-text-fill: -hg-ink-soft; }
 .splash-credit { -fx-font-size: 23px; -fx-font-weight: bold; }
-.splash-enter { -fx-background-color: #46553f; -fx-text-fill: #fff7e5; -fx-font-size: 22px; -fx-padding: 14px 35px; -fx-background-radius: 6; }
-.splash-enter:hover { -fx-background-color: #5d6a50; }
+.splash-enter { -fx-background-color: -hg-green; -fx-text-fill: -hg-on-green; -fx-font-size: 22px; -fx-padding: 14px 35px; -fx-background-radius: 6; }
+.splash-enter:hover { -fx-background-color: -hg-green-hover; }
+
+/* Forms: login, registration, and teammates' input screens. */
+.form-page { -fx-background-color: linear-gradient(to bottom right, #d6bb8b, #f2e4c8, #c9aa78); -fx-padding: 40; }
+.form-card { -fx-background-color: rgba(255, 248, 231, 0.96); -fx-background-radius: 10; -fx-border-color: -hg-border-dark; -fx-border-radius: 10; -fx-border-width: 2; -fx-padding: 36; }
+.form-title { -fx-font-family: 'Times New Roman'; -fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: -hg-green-text; }
+.form-hint { -fx-text-fill: -hg-ink-soft; }
+.form-error { -fx-text-fill: -hg-error; -fx-font-weight: bold; }
+.form-notice { -fx-text-fill: -hg-green-text; -fx-background-color: -hg-notice-bg; -fx-border-color: -hg-notice-border; -fx-padding: 8; -fx-background-radius: 4; -fx-border-radius: 4; }
+.text-field, .password-field, .text-area { -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8 10; }
+.text-field:focused, .password-field:focused, .text-area:focused { -fx-border-color: -hg-green; }
+.primary-button { -fx-background-color: -hg-green; -fx-text-fill: -hg-on-green; -fx-font-size: 17px; -fx-padding: 10 24; -fx-border-color: transparent; }
+.primary-button:hover { -fx-background-color: -hg-green-hover; }
+.primary-button:disabled { -fx-opacity: .7; }
+.hyperlink { -fx-text-fill: -hg-green; }
+
+/* Main menu and the shared screen toolbar. */
+.menu-page { -fx-background-color: linear-gradient(to bottom, #f7ecd4, #e7d3ad); }
+.menu-title { -fx-font-family: 'Times New Roman'; -fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: -hg-green-text; }
+.role-badge { -fx-background-color: -hg-sand; -fx-border-color: -hg-border; -fx-padding: 4 12; -fx-background-radius: 12; -fx-border-radius: 12; }
+.menu-tile { -fx-background-color: -hg-paper-warm; -fx-border-color: #9b7852; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 18; }
+.menu-tile:hover { -fx-background-color: #f1dbb2; }
+.menu-tile-title { -fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: -hg-green-text; }
+.menu-tile-text { -fx-text-fill: -hg-ink-soft; }
+.menu-tile-locked { -fx-opacity: .75; }
+.menu-tile-lock { -fx-text-fill: -hg-error; -fx-font-style: italic; }
+.toolbar-title { -fx-font-size: 18px; -fx-font-weight: bold; }
+.signed-in-as { -fx-text-fill: -hg-ink-soft; }
