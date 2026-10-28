@@ -26,12 +26,25 @@ public final class DesktopSmokeCheck {
                 app.start(stage);
                 BorderPane root = (BorderPane) stage.getScene().getRoot();
                 ((Button) root.lookup("#enter-history")).fire();
+                if (!(root.getCenter() instanceof LoginView)) throw new AssertionError("Login after splash");
+                ((javafx.scene.control.Hyperlink) root.lookup("#register-link")).fire();
+                if (!(root.getCenter() instanceof RegisterView)) throw new AssertionError("Register navigation");
+                ((javafx.scene.control.Hyperlink) root.lookup("#back-to-login")).fire();
+                ((javafx.scene.control.Hyperlink) root.lookup("#guest-button")).fire();
+                if (!(root.getCenter() instanceof MainMenuView)) throw new AssertionError("Guest main menu");
+                if (root.lookup("#menu-admin") != null) throw new AssertionError("Admin tile shown to guest");
+                ((Button) root.lookup("#menu-stories")).fire();
+                if (!(root.getCenter() instanceof LoginView)) throw new AssertionError("Guest locked out of stories");
+                ((javafx.scene.control.Hyperlink) root.lookup("#guest-button")).fire();
+                ((Button) root.lookup("#menu-timeline")).fire();
                 if (!(root.getCenter() instanceof ScrollPane)) throw new AssertionError("Chart navigation");
+                ((Button) root.lookup("#main-menu-button")).fire();
+                if (!(root.getCenter() instanceof MainMenuView)) throw new AssertionError("Back to main menu");
                 stage.close();
                 result.complete(null);
             } catch (Throwable error) { result.completeExceptionally(error); }
         });
-        try { result.get(30, TimeUnit.SECONDS); System.out.println("PASS: event maps, cloud bird selection, splash and timeline navigation"); }
+        try { result.get(30, TimeUnit.SECONDS); System.out.println("PASS: event maps, cloud bird selection, splash, login, main menu and timeline navigation"); }
         finally { Platform.exit(); }
     }
 }
