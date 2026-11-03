@@ -24,10 +24,12 @@
     -hg-card: rgba(255, 248, 231, 0.96);
     -hg-tile-border: #9b7852;
     -hg-tile-hover: #f1dbb2;
+    -hg-link: #46553f;
 
     -fx-font-family: 'Georgia'; -fx-font-size: 15px; -fx-background-color: -hg-parchment; -fx-text-fill: -hg-ink;
 }
 .label { -fx-text-fill: -hg-ink; }
+.button, .hyperlink, .menu-button { -fx-text-fill: -hg-ink; }
 .tool-bar { -fx-background-color: -hg-sand; -fx-padding: 12px; -fx-spacing: 8px; }
 .button { -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-cursor: hand; }
 .button:hover { -fx-background-color: -hg-sand-hover; }
@@ -54,12 +56,12 @@
 .form-hint { -fx-text-fill: -hg-ink-soft; }
 .form-error { -fx-text-fill: -hg-error; -fx-font-weight: bold; }
 .form-notice { -fx-text-fill: -hg-green-text; -fx-background-color: -hg-notice-bg; -fx-border-color: -hg-notice-border; -fx-padding: 8; -fx-background-radius: 4; -fx-border-radius: 4; }
-.text-field, .password-field, .text-area { -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8 10; }
+.text-field, .password-field, .text-area { -fx-text-inner-color: -hg-ink; -fx-prompt-text-fill: -hg-ink-soft; -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8 10; }
 .text-field:focused, .password-field:focused, .text-area:focused { -fx-border-color: -hg-green; }
 .primary-button { -fx-background-color: -hg-green; -fx-text-fill: -hg-on-green; -fx-font-size: 17px; -fx-padding: 10 24; -fx-border-color: transparent; }
 .primary-button:hover { -fx-background-color: -hg-green-hover; }
 .primary-button:disabled { -fx-opacity: .7; }
-.hyperlink { -fx-text-fill: -hg-green; }
+.hyperlink { -fx-text-fill: -hg-link; }
 
 /* Main menu and the shared screen toolbar. */
 .menu-page { -fx-background-color: linear-gradient(to bottom, -hg-menu-top, -hg-menu-bottom); }
@@ -75,3 +77,5 @@
 .signed-in-as { -fx-text-fill: -hg-ink-soft; }
 .form-section { -fx-font-weight: bold; -fx-text-fill: -hg-green-text; }
 .combo-box { -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4; -fx-background-radius: 4; }
+.combo-box .list-cell { -fx-text-fill: -hg-ink; -fx-background-color: -hg-paper; }
+.combo-box .list-cell:hover { -fx-background-color: -hg-sand-hover; }
