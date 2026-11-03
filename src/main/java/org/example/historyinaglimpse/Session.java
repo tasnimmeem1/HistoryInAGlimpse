@@ -8,7 +8,8 @@ import java.util.function.Supplier;
 /** The logged-in user for this run of the app, plus the account calls to the backend. */
 public final class Session {
     /** Matches the backend's UserProfile. */
-    public record User(Long id, String username, String displayName, Role role) { }
+    public record User(Long id, String username, String displayName, Role role,
+                       boolean hasPassword, boolean google) { }
     public record LoginReply(String token, User user) { }
     public record LoginRequest(String username, String password) { }
     public record RegisterRequest(String username, String displayName, String password) { }
@@ -41,6 +42,14 @@ public final class Session {
         return user;
     }
 
+    /** Blocking: signs in through Google in the browser. */
+    public static User loginWithGoogle() {
+        LoginReply reply = GoogleSignIn.signIn();
+        token = reply.token();
+        user = reply.user();
+        return user;
+    }
+
     /** Blocking: creates the account, then logs in with it. */
     public static User register(String username, String displayName, String password) {
         ApiClient.post("/api/auth/register", new RegisterRequest(username, displayName, password), User.class);
@@ -56,6 +65,9 @@ public final class Session {
     /** Blocking: changes the current user's password. */
     public static void changePassword(String currentPassword, String newPassword) {
         ApiClient.put("/api/auth/me/password", new PasswordRequest(currentPassword, newPassword), Void.class);
+        User current = user;
+        if (current != null && !current.hasPassword())
+            user = new User(current.id(), current.username(), current.displayName(), current.role(), true, current.google());
     }
 
     /** Blocking, admins only: every account. */
