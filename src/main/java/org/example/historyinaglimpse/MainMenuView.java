@@ -36,7 +36,7 @@ public final class MainMenuView extends BorderPane {
             if (Session.loggedIn()) navigator.logout();
             else navigator.login();
         });
-        HBox header = new HBox(14, heading, spacer, role, account);
+        HBox header = new HBox(14, heading, spacer, Theme.toggleButton(), role, account);
         header.setAlignment(Pos.CENTER_LEFT);
         header.setPadding(new Insets(28, 40, 12, 40));
         setTop(header);
