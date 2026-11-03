@@ -19,6 +19,7 @@ public final class MyAccountView extends StackPane {
         Label who = new Label("Username: " + Session.user().username() + " · " + Session.role().label()
                 + (Session.user().google() ? " · Linked to Google" : ""));
         who.getStyleClass().add("form-hint");
+        who.setWrapText(true);
 
         Label nameHeading = new Label("Display name");
         nameHeading.getStyleClass().add("form-section");
