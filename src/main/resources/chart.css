@@ -79,3 +79,6 @@
 .combo-box { -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4; -fx-background-radius: 4; }
 .combo-box .list-cell { -fx-text-fill: -hg-ink; -fx-background-color: -hg-paper; }
 .combo-box .list-cell:hover { -fx-background-color: -hg-sand-hover; }
+.google-button { -fx-background-color: -hg-paper; -fx-border-color: -hg-border-dark; -fx-font-size: 16px; -fx-padding: 9 24; }
+.google-button:hover { -fx-background-color: -hg-sand-hover; }
+.google-button:disabled { -fx-opacity: .8; }
