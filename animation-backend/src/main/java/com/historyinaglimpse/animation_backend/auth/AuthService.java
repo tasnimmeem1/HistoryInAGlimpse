@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
- * Registration, login and logout. Sessions are random bearer tokens kept in
+ * Registration, login (with a password or with Google) and logout. Sessions are random bearer tokens kept in
  * memory, so everyone is logged out when the backend restarts.
  *
  * Other controllers protect an endpoint with {@link #requireRole}, passing the
@@ -53,6 +53,35 @@ public class AuthService {
                 .filter(a -> password != null && a.passwordHash() != null && encoder.matches(password, a.passwordHash()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                         "Wrong username or password."));
+        return startSession(account);
+    }
+
+    /**
+     * Logs in with a Google identity that {@link GoogleSignIn} has checked. The
+     * first time, this makes an account with a username taken from the email.
+     */
+    public Login googleLogin(GoogleSignIn.GoogleUser google) {
+        UserAccount account = users.findByGoogleSub(google.sub()).orElseGet(() -> {
+            String name = freeUsername(google.email());
+            String shown = google.name() == null || google.name().isBlank() ? name : google.name().strip();
+            if (shown.length() > 60) shown = shown.substring(0, 60);
+            return users.create(name, shown, null, google.sub(), Role.USER);
+        });
+        return startSession(account);
+    }
+
+    /** "Ada.Lovelace+x@gmail.com" becomes ada_lovelace_x, or ada_lovelace_x2 if that is taken. */
+    private String freeUsername(String email) {
+        String local = email == null ? "" : email.split("@", 2)[0];
+        String base = local.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9_]+", "_").replaceAll("^_+|_+$", "");
+        if (base.length() < 3) base = (base + "_user").replaceAll("^_+", "");
+        if (base.length() > 26) base = base.substring(0, 26);
+        String name = base;
+        for (int n = 2; users.findByUsername(name).isPresent(); n++) name = base + n;
+        return name;
+    }
+
+    private Login startSession(UserAccount account) {
         byte[] bytes = new byte[32];
         random.nextBytes(bytes);
         String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
@@ -83,16 +112,21 @@ public class AuthService {
         return refresh(users.update(user.username(), Map.of("display_name", displayName.strip())).profile());
     }
 
-    /** Changes the logged-in user's password after checking the current one. */
+    /**
+     * Changes the logged-in user's password after checking the current one,
+     * or adds a first password to an account made with Google sign-in.
+     */
     public void changePassword(String authorization, String currentPassword, String newPassword) {
         UserProfile user = requireUser(authorization);
         UserAccount account = users.findByUsername(user.username())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please log in."));
-        if (currentPassword == null || !encoder.matches(currentPassword, account.passwordHash()))
+        // Google-only accounts have no password yet, so there is nothing to check.
+        if (account.passwordHash() != null
+                && (currentPassword == null || !encoder.matches(currentPassword, account.passwordHash())))
             throw bad("Your current password is wrong.");
         if (newPassword == null || newPassword.length() < MIN_PASSWORD)
             throw bad("Passwords need at least " + MIN_PASSWORD + " characters.");
-        users.update(user.username(), Map.of("password_hash", encoder.encode(newPassword)));
+        refresh(users.update(user.username(), Map.of("password_hash", encoder.encode(newPassword))).profile());
     }
 
     /** Puts a changed profile into that user's open sessions, so role changes apply at once. */
