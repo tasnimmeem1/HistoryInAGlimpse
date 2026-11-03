@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,6 +58,47 @@ public class AuthService {
         String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
         sessions.put(token, account.profile());
         return new Login(token, account.profile());
+    }
+
+    /** Admins only: every account, oldest first. */
+    public List<UserProfile> listUsers(String authorization) {
+        requireRole(authorization, Role.ADMIN);
+        return users.findAll().stream().map(UserAccount::profile).toList();
+    }
+
+    /** Admins only. Admins cannot change their own role, so there is always one left. */
+    public UserProfile setRole(String authorization, String username, Role role) {
+        UserProfile admin = requireRole(authorization, Role.ADMIN);
+        if (role == null) throw bad("Choose a role.");
+        String name = normalize(username);
+        if (name.equals(admin.username())) throw bad("You cannot change your own role.");
+        return refresh(users.update(name, Map.of("role", role.name())).profile());
+    }
+
+    /** Changes the logged-in user's display name. */
+    public UserProfile updateProfile(String authorization, String displayName) {
+        UserProfile user = requireUser(authorization);
+        if (displayName == null || displayName.isBlank()) throw bad("Enter a display name.");
+        if (displayName.strip().length() > 60) throw bad("Display names are at most 60 characters.");
+        return refresh(users.update(user.username(), Map.of("display_name", displayName.strip())).profile());
+    }
+
+    /** Changes the logged-in user's password after checking the current one. */
+    public void changePassword(String authorization, String currentPassword, String newPassword) {
+        UserProfile user = requireUser(authorization);
+        UserAccount account = users.findByUsername(user.username())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please log in."));
+        if (currentPassword == null || !encoder.matches(currentPassword, account.passwordHash()))
+            throw bad("Your current password is wrong.");
+        if (newPassword == null || newPassword.length() < MIN_PASSWORD)
+            throw bad("Passwords need at least " + MIN_PASSWORD + " characters.");
+        users.update(user.username(), Map.of("password_hash", encoder.encode(newPassword)));
+    }
+
+    /** Puts a changed profile into that user's open sessions, so role changes apply at once. */
+    private UserProfile refresh(UserProfile changed) {
+        sessions.replaceAll((token, profile) -> profile.username().equals(changed.username()) ? changed : profile);
+        return changed;
     }
 
     public void logout(String authorization) {

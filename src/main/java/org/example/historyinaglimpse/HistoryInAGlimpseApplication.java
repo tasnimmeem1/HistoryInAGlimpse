@@ -251,9 +251,12 @@ public class HistoryInAGlimpseApplication extends Application {
         navigator.addScreen("saved", "Saved history & reports",
                 "Bookmarks, saved selections, and reports you can preview and export.",
                 Role.USER, () -> Navigator.placeholder("Saved history & reports"));
+        navigator.addScreen("account", "My account",
+                "Change your display name or password.",
+                Role.USER, MyAccountView::new);
         navigator.addScreen("admin", "Manage accounts",
-                "Review users and moderate shared stories.",
-                Role.ADMIN, () -> Navigator.placeholder("Manage accounts"));
+                "See everyone who has an account and choose who is an administrator.",
+                Role.ADMIN, ManageAccountsView::new);
     }
 
     private Button button(String text, Runnable action) {

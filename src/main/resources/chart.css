@@ -65,3 +65,5 @@
 .menu-tile-lock { -fx-text-fill: -hg-error; -fx-font-style: italic; }
 .toolbar-title { -fx-font-size: 18px; -fx-font-weight: bold; }
 .signed-in-as { -fx-text-fill: -hg-ink-soft; }
+.form-section { -fx-font-weight: bold; -fx-text-fill: -hg-green-text; }
+.combo-box { -fx-background-color: -hg-paper; -fx-border-color: -hg-border; -fx-border-radius: 4; -fx-background-radius: 4; }

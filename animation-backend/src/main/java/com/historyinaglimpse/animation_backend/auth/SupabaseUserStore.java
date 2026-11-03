@@ -37,6 +37,33 @@ public class SupabaseUserStore implements UserStore {
         }
     }
 
+    @Override public List<UserAccount> findAll() {
+        try {
+            List<UserAccount> rows = client.get().uri("/rest/v1/app_users?select=*&order=id.asc")
+                    .retrieve().body(ROWS);
+            return rows == null ? List.of() : rows;
+        } catch (RestClientException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not reach the account database.");
+        }
+    }
+
+    @Override public UserAccount update(String username, Map<String, String> columns) {
+        try {
+            List<UserAccount> rows = client.patch()
+                    .uri("/rest/v1/app_users?username=eq."
+                            + UriUtils.encodeQueryParam(username, StandardCharsets.UTF_8))
+                    .header("Prefer", "return=representation")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(columns)
+                    .retrieve().body(ROWS);
+            if (rows == null || rows.isEmpty())
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account with that username.");
+            return rows.get(0);
+        } catch (RestClientException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not save the account.");
+        }
+    }
+
     @Override public UserAccount create(String username, String displayName, String passwordHash, Role role) {
         try {
             List<UserAccount> rows = client.post().uri("/rest/v1/app_users")

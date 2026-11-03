@@ -45,6 +45,16 @@ public final class ApiClient {
         return post(path, body, type, Session.token());
     }
 
+    public static <T> T put(String path, Object body, Class<T> type) {
+        try {
+            String json = body == null ? "" : JSON.writeValueAsString(body);
+            return send(request(path, Session.token()).header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json)), type);
+        } catch (IOException ex) {
+            throw new ApiException(0, "Could not prepare the request.");
+        }
+    }
+
     /** POST with a specific token instead of the current session's. */
     static <T> T post(String path, Object body, Class<T> type, String token) {
         try {
