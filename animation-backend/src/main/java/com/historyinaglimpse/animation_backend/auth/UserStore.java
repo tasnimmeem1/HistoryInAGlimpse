@@ -8,8 +8,14 @@ import java.util.Optional;
 public interface UserStore {
     Optional<UserAccount> findByUsername(String username);
 
-    /** Saves a new account and returns it with its database id. */
-    UserAccount create(String username, String displayName, String passwordHash, Role role);
+    /** The account linked to a Google user id (the "sub" in Google's ID token). */
+    Optional<UserAccount> findByGoogleSub(String googleSub);
+
+    /**
+     * Saves a new account and returns it with its database id. Either the
+     * password hash or the Google id may be null, but not both.
+     */
+    UserAccount create(String username, String displayName, String passwordHash, String googleSub, Role role);
 
     /** Every account, oldest first. */
     List<UserAccount> findAll();

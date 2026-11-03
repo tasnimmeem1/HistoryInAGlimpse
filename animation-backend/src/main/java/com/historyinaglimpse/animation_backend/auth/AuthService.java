@@ -45,12 +45,12 @@ public class AuthService {
         if (users.findByUsername(name).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "That username is taken.");
         // New accounts are always USER; promote admins in the database.
-        return users.create(name, shown, encoder.encode(password), Role.USER).profile();
+        return users.create(name, shown, encoder.encode(password), null, Role.USER).profile();
     }
 
     public Login login(String username, String password) {
         UserAccount account = users.findByUsername(normalize(username))
-                .filter(a -> password != null && encoder.matches(password, a.passwordHash()))
+                .filter(a -> password != null && a.passwordHash() != null && encoder.matches(password, a.passwordHash()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                         "Wrong username or password."));
         byte[] bytes = new byte[32];

@@ -11,6 +11,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriUtils;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,10 +27,18 @@ public class SupabaseUserStore implements UserStore {
     }
 
     @Override public Optional<UserAccount> findByUsername(String username) {
+        return findOne("username", username);
+    }
+
+    @Override public Optional<UserAccount> findByGoogleSub(String googleSub) {
+        return findOne("google_sub", googleSub);
+    }
+
+    private Optional<UserAccount> findOne(String column, String value) {
         try {
             List<UserAccount> rows = client.get()
-                    .uri("/rest/v1/app_users?select=*&username=eq."
-                            + UriUtils.encodeQueryParam(username, StandardCharsets.UTF_8))
+                    .uri("/rest/v1/app_users?select=*&" + column + "=eq."
+                            + UriUtils.encodeQueryParam(value, StandardCharsets.UTF_8))
                     .retrieve().body(ROWS);
             return rows == null ? Optional.empty() : rows.stream().findFirst();
         } catch (RestClientException ex) {
@@ -64,19 +73,25 @@ public class SupabaseUserStore implements UserStore {
         }
     }
 
-    @Override public UserAccount create(String username, String displayName, String passwordHash, Role role) {
+    @Override public UserAccount create(String username, String displayName, String passwordHash,
+                                       String googleSub, Role role) {
+        Map<String, String> row = new HashMap<>();
+        row.put("username", username);
+        row.put("display_name", displayName);
+        row.put("password_hash", passwordHash);
+        row.put("google_sub", googleSub);
+        row.put("role", role.name());
         try {
             List<UserAccount> rows = client.post().uri("/rest/v1/app_users")
                     .header("Prefer", "return=representation")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(Map.of("username", username, "display_name", displayName,
-                            "password_hash", passwordHash, "role", role.name()))
+                    .body(row)
                     .retrieve().body(ROWS);
             if (rows == null || rows.isEmpty())
                 throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The account was not saved.");
             return rows.get(0);
         } catch (RestClientResponseException ex) {
-            // 409 is the unique constraint on username.
+            // 409 is a unique constraint: almost always the username.
             if (ex.getStatusCode().value() == 409)
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "That username is taken.");
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not save the account.");

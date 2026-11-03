@@ -14,8 +14,11 @@ class AuthServiceTests {
     static final class MemoryStore implements UserStore {
         final Map<String, UserAccount> rows = new HashMap<>();
         public Optional<UserAccount> findByUsername(String username) { return Optional.ofNullable(rows.get(username)); }
-        public UserAccount create(String username, String displayName, String hash, Role role) {
-            UserAccount account = new UserAccount((long) rows.size() + 1, username, displayName, hash, role);
+        public Optional<UserAccount> findByGoogleSub(String sub) {
+            return rows.values().stream().filter(a -> sub.equals(a.googleSub())).findFirst();
+        }
+        public UserAccount create(String username, String displayName, String hash, String googleSub, Role role) {
+            UserAccount account = new UserAccount((long) rows.size() + 1, username, displayName, hash, googleSub, role);
             rows.put(username, account);
             return account;
         }
@@ -26,6 +29,7 @@ class AuthServiceTests {
             UserAccount changed = new UserAccount(a.id(), a.username(),
                     columns.getOrDefault("display_name", a.displayName()),
                     columns.getOrDefault("password_hash", a.passwordHash()),
+                    a.googleSub(),
                     columns.containsKey("role") ? Role.valueOf(columns.get("role")) : a.role());
             rows.put(username, changed);
             return changed;
@@ -116,7 +120,7 @@ class AuthServiceTests {
         server.createContext("/rest/v1/app_users", e -> {
             seen.add(e.getRequestMethod() + " " + e.getRequestURI().getRawQuery() + " " + e.getRequestHeaders().getFirst("apikey"));
             byte[] body = ("[{\"id\":7,\"username\":\"ada\",\"display_name\":\"Ada\","
-                    + "\"password_hash\":\"h\",\"role\":\"ADMIN\",\"created_at\":\"2026-10-28T00:00:00Z\"}]")
+                    + "\"password_hash\":\"h\",\"google_sub\":null,\"role\":\"ADMIN\",\"created_at\":\"2026-10-28T00:00:00Z\"}]")
                     .getBytes(StandardCharsets.UTF_8);
             e.getResponseHeaders().add("Content-Type", "application/json");
             e.sendResponseHeaders(e.getRequestMethod().equals("POST") ? 201 : 200, body.length);
@@ -127,8 +131,8 @@ class AuthServiceTests {
         try {
             var users = new SupabaseUserStore("http://127.0.0.1:" + server.getAddress().getPort(), "key");
             UserAccount found = users.findByUsername("ada").orElseThrow();
-            assertEquals(new UserAccount(7L, "ada", "Ada", "h", Role.ADMIN), found);
-            assertEquals(7L, users.create("ada", "Ada", "h", Role.USER).id());
+            assertEquals(new UserAccount(7L, "ada", "Ada", "h", null, Role.ADMIN), found);
+            assertEquals(7L, users.create("ada", "Ada", "h", null, Role.USER).id());
             assertEquals("GET select=*&username=eq.ada key", seen.get(0));
             assertTrue(seen.get(1).startsWith("POST"));
             assertEquals(1, users.findAll().size());
