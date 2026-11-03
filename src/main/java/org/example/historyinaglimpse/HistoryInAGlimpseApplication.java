@@ -27,6 +27,7 @@ public class HistoryInAGlimpseApplication extends Application {
     private NewtonLawsView newtonView;
     private WattCondenserView wattView;
     private ModernBatchView modernView;
+    private Navigator navigator;
 
     private Image asset(String name) {
         var url = getClass().getResource("/images/" + name);
@@ -37,6 +38,8 @@ public class HistoryInAGlimpseApplication extends Application {
     }
 
     @Override public void start(Stage stage) {
+        navigator = new Navigator(root, this::stopAnimation);
+        registerFeatures();
         buildOriginalChart();
         chartScroll.setContent(new Group(new Group(chart)));
         chartScroll.setPannable(true);
@@ -78,7 +81,9 @@ public class HistoryInAGlimpseApplication extends Application {
         }
         Hyperlink reference = new Hyperlink("View the historical inspiration");
         reference.setOnAction(e -> getHostServices().showDocument("https://www.davidrumsey.com/blog/2012/3/28/timeline-maps"));
-        Button enter = button("Explore history", this::showChart);
+        Button enter = button("Explore history", () -> {
+            if (Session.loggedIn()) navigator.mainMenu(); else navigator.login();
+        });
         enter.setId("enter-history"); enter.setDefaultButton(true); enter.getStyleClass().add("splash-enter");
         VBox content = new VBox(22, title, subtitle, divider, credit, chartName, reference, enter);
         content.setAlignment(javafx.geometry.Pos.CENTER); content.setPadding(new Insets(60));
@@ -232,6 +237,25 @@ public class HistoryInAGlimpseApplication extends Application {
     }
 
 
+    /**
+     * Main-menu entries. Teammates replace their placeholder with their own
+     * screen, e.g. navigator.addScreen("stories", ..., Role.USER, StoryListView::new).
+     */
+    private void registerFeatures() {
+        navigator.addFeature(new Navigator.Feature("timeline", "Explore the timeline",
+                "Browse the illustrated chart of world history and open animated scenes.",
+                Role.GUEST, this::showChart));
+        navigator.addScreen("stories", "Shared stories",
+                "Read, search and share stories with tags and timestamps.",
+                Role.USER, () -> Navigator.placeholder("Shared stories"));
+        navigator.addScreen("saved", "Saved history & reports",
+                "Bookmarks, saved selections, and reports you can preview and export.",
+                Role.USER, () -> Navigator.placeholder("Saved history & reports"));
+        navigator.addScreen("admin", "Manage accounts",
+                "Review users and moderate shared stories.",
+                Role.ADMIN, () -> Navigator.placeholder("Manage accounts"));
+    }
+
     private Button button(String text, Runnable action) {
         Button b = new Button(text);
         b.setOnAction(e -> action.run());
@@ -240,7 +264,12 @@ public class HistoryInAGlimpseApplication extends Application {
 
     private void showChart() {
         stopAnimation();
-        if (timelineToolbar == null) timelineToolbar = TimelineSearch.toolbar(chartScroll, chart, this::showEvent);
+        if (timelineToolbar == null) {
+            timelineToolbar = TimelineSearch.toolbar(chartScroll, chart, this::showEvent);
+            Button menu = button("← Main menu", navigator::mainMenu);
+            menu.setId("main-menu-button");
+            timelineToolbar.getChildren().add(0, menu);
+        }
         root.setTop(timelineToolbar);
         root.setBottom(null);
         root.setCenter(chartScroll);
