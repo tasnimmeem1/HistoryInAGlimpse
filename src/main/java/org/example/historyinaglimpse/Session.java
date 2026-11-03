@@ -12,6 +12,9 @@ public final class Session {
     public record LoginReply(String token, User user) { }
     public record LoginRequest(String username, String password) { }
     public record RegisterRequest(String username, String displayName, String password) { }
+    public record ProfileRequest(String displayName) { }
+    public record PasswordRequest(String currentPassword, String newPassword) { }
+    public record RoleRequest(Role role) { }
 
     private static volatile User user;
     private static volatile String token;
@@ -42,6 +45,28 @@ public final class Session {
     public static User register(String username, String displayName, String password) {
         ApiClient.post("/api/auth/register", new RegisterRequest(username, displayName, password), User.class);
         return login(username, password);
+    }
+
+    /** Blocking: changes the current user's display name. */
+    public static User updateDisplayName(String displayName) {
+        user = ApiClient.put("/api/auth/me", new ProfileRequest(displayName), User.class);
+        return user;
+    }
+
+    /** Blocking: changes the current user's password. */
+    public static void changePassword(String currentPassword, String newPassword) {
+        ApiClient.put("/api/auth/me/password", new PasswordRequest(currentPassword, newPassword), Void.class);
+    }
+
+    /** Blocking, admins only: every account. */
+    public static java.util.List<User> listUsers() {
+        return java.util.List.of(ApiClient.get("/api/admin/users", User[].class));
+    }
+
+    /** Blocking, admins only: gives another account a new role. */
+    public static User setRole(String username, Role role) {
+        return ApiClient.put("/api/admin/users/" + java.net.URLEncoder.encode(username, java.nio.charset.StandardCharsets.UTF_8)
+                + "/role", new RoleRequest(role), User.class);
     }
 
     /** Forgets the user right away and tells the backend in the background. */

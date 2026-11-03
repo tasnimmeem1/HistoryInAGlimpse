@@ -67,7 +67,7 @@ The app opens on the splash screen, then the login screen. People can log in, cr
 | --- | --- | --- |
 | GUEST | not logged in | timeline |
 | USER | anyone who registers | timeline, shared stories, saved history and reports |
-| ADMIN | promoted in the database | everything, plus account management |
+| ADMIN | promoted by another admin, or in the database for the first one | everything, plus Manage accounts |
 
 One-time database setup: run `sql/app_users.sql` in the Supabase SQL editor. To make an admin, register normally, then run `update public.app_users set role = 'ADMIN' where username = '...';`.
 
@@ -75,6 +75,8 @@ Backend endpoints (all JSON):
 - `POST /api/auth/register` with `{"username", "displayName", "password"}`
 - `POST /api/auth/login` with `{"username", "password"}`, returns `{"token", "user"}`
 - `POST /api/auth/logout` and `GET /api/auth/me`, both with `Authorization: Bearer <token>`
+- `PUT /api/auth/me` with `{"displayName"}`, and `PUT /api/auth/me/password` with `{"currentPassword", "newPassword"}`
+- Admins only: `GET /api/admin/users`, and `PUT /api/admin/users/{username}/role` with `{"role": "USER" | "ADMIN"}`. Admins cannot change their own role, so there is always at least one admin.
 
 Logins are kept in the backend's memory, so restarting the backend logs everyone out.
 

@@ -13,6 +13,8 @@ public class AuthController {
 
     public record RegisterRequest(String username, String displayName, String password) { }
     public record LoginRequest(String username, String password) { }
+    public record ProfileRequest(String displayName) { }
+    public record PasswordRequest(String currentPassword, String newPassword) { }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -34,5 +36,18 @@ public class AuthController {
     @GetMapping("/me")
     public UserProfile me(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization) {
         return auth.requireUser(authorization);
+    }
+
+    @PutMapping("/me")
+    public UserProfile updateMe(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+                                @RequestBody ProfileRequest body) {
+        return auth.updateProfile(authorization, body.displayName());
+    }
+
+    @PutMapping("/me/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+                               @RequestBody PasswordRequest body) {
+        auth.changePassword(authorization, body.currentPassword(), body.newPassword());
     }
 }
