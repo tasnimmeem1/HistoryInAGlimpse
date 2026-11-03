@@ -3,6 +3,7 @@ module org.example.historyinaglimpse {
     requires javafx.media;
     requires java.desktop;
     requires java.net.http;
+    requires java.prefs;
     requires com.fasterxml.jackson.databind;
 
 

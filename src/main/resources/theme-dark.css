@@ -1,0 +1,28 @@
+/* Dark theme. Loaded after chart.css and overrides only its palette, so every screen follows. */
+.root {
+    -hg-parchment: #1f1b16;
+    -hg-paper: #2b251e;
+    -hg-paper-warm: #332b22;
+    -hg-sand: #3a3128;
+    -hg-sand-hover: #4a3f33;
+    -hg-ink: #eadfcb;
+    -hg-ink-soft: #c2b49b;
+    -hg-border: #6b5a45;
+    -hg-border-dark: #8a7356;
+    -hg-green: #5d7a4e;
+    -hg-green-hover: #6f8c5f;
+    -hg-green-text: #b9cfa3;
+    -hg-on-green: #f6f0e0;
+    -hg-error: #ec9a80;
+    -hg-notice-bg: #2f3a29;
+    -hg-notice-border: #6c8055;
+    -hg-page-start: #2a231b;
+    -hg-page-middle: #3a3026;
+    -hg-page-end: #241e17;
+    -hg-menu-top: #2a241c;
+    -hg-menu-bottom: #1e1a15;
+    -hg-card: rgba(43, 37, 30, 0.96);
+    -hg-tile-border: #6b5a45;
+    -hg-tile-hover: #3f352a;
+    -hg-link: #a9c48f;
+}

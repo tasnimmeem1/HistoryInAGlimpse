@@ -51,6 +51,7 @@ public class HistoryInAGlimpseApplication extends Application {
         showSplash();
         Scene scene = new Scene(root, 1200, 780);
         scene.getStylesheets().add(getClass().getResource("/chart.css").toExternalForm());
+        Theme.apply(scene);
         stage.setTitle("History in a Glimpse");
         stage.setScene(scene);
         stage.setMinWidth(640);
@@ -272,6 +273,7 @@ public class HistoryInAGlimpseApplication extends Application {
             Button menu = button("← Main menu", navigator::mainMenu);
             menu.setId("main-menu-button");
             timelineToolbar.getChildren().add(0, menu);
+            timelineToolbar.getChildren().add(Theme.toggleButton());
         }
         root.setTop(timelineToolbar);
         root.setBottom(null);

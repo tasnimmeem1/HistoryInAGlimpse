@@ -33,6 +33,11 @@ public final class DesktopSmokeCheck {
                 ((javafx.scene.control.Hyperlink) root.lookup("#guest-button")).fire();
                 if (!(root.getCenter() instanceof MainMenuView)) throw new AssertionError("Guest main menu");
                 if (root.lookup("#menu-admin") != null) throw new AssertionError("Admin tile shown to guest");
+                boolean wasDark = Theme.isDark();
+                ((Button) root.lookup("#theme-toggle")).fire();
+                if (Theme.isDark() == wasDark) throw new AssertionError("Theme toggle");
+                ((Button) root.lookup("#theme-toggle")).fire();
+                if (Theme.isDark() != wasDark) throw new AssertionError("Theme toggle back");
                 ((Button) root.lookup("#menu-stories")).fire();
                 if (!(root.getCenter() instanceof LoginView)) throw new AssertionError("Guest locked out of stories");
                 ((javafx.scene.control.Hyperlink) root.lookup("#guest-button")).fire();
@@ -44,7 +49,7 @@ public final class DesktopSmokeCheck {
                 result.complete(null);
             } catch (Throwable error) { result.completeExceptionally(error); }
         });
-        try { result.get(30, TimeUnit.SECONDS); System.out.println("PASS: event maps, cloud bird selection, splash, login, main menu and timeline navigation"); }
+        try { result.get(30, TimeUnit.SECONDS); System.out.println("PASS: event maps, cloud bird selection, splash, login, main menu, theme toggle and timeline navigation"); }
         finally { Platform.exit(); }
     }
 }

@@ -86,7 +86,7 @@ public final class Navigator {
         javafx.scene.layout.HBox.setHgrow(spacer, Priority.ALWAYS);
         Label who = new Label(Session.displayName() + " · " + Session.role().label());
         who.getStyleClass().add("signed-in-as");
-        return new ToolBar(back, heading, spacer, who);
+        return new ToolBar(back, heading, spacer, who, Theme.toggleButton());
     }
 
     /** Stand-in for a screen a teammate has not built yet. */
