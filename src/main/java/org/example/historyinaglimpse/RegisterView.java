@@ -62,7 +62,8 @@ public final class RegisterView extends StackPane {
         back.setId("back-to-login");
         back.setOnAction(e -> navigator.login());
 
-        VBox card = new VBox(14, title, message, username, displayName, password, confirm, create, back);
+        VBox card = new VBox(14, title, message, username, displayName, password, confirm, create,
+                LoginView.googleSection(navigator, message), back);
         card.getStyleClass().add("form-card");
         card.setMaxWidth(420);
         card.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);

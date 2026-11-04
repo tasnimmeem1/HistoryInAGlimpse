@@ -10,7 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-/** Login screen, with links to registration and guest access. */
+/** Login screen, with Google sign-in (when set up) and links to registration and guest access. */
 public final class LoginView extends StackPane {
     public LoginView(Navigator navigator, String notice) {
         getStyleClass().add("form-page");
@@ -66,11 +66,52 @@ public final class LoginView extends StackPane {
         HBox links = new HBox(12, register, new Label("·"), guest);
         links.setAlignment(Pos.CENTER);
 
-        VBox card = new VBox(14, title, subtitle, message, username, password, login, links);
+        VBox card = new VBox(14, title, subtitle, message, username, password, login,
+                googleSection(navigator, message), links);
         card.getStyleClass().add("form-card");
         card.setMaxWidth(420);
         card.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
         getChildren().add(card);
+    }
+
+    /**
+     * "or" plus a Continue with Google button. Stays hidden unless the backend
+     * has Google sign-in set up, so the screen looks the same without it.
+     */
+    static VBox googleSection(Navigator navigator, Label message) {
+        Label or = new Label("or");
+        or.getStyleClass().add("form-hint");
+        Button google = new Button("Continue with Google");
+        google.setId("google-button");
+        google.getStyleClass().add("google-button");
+        google.setMaxWidth(Double.MAX_VALUE);
+        Hyperlink cancel = new Hyperlink("Cancel");
+        cancel.setId("google-cancel");
+        cancel.setVisible(false);
+        cancel.managedProperty().bind(cancel.visibleProperty());
+        cancel.setOnAction(e -> GoogleSignIn.cancel());
+
+        google.setOnAction(e -> {
+            google.setDisable(true);
+            google.setText("Finish signing in in your browser…");
+            cancel.setVisible(true);
+            message.setText("");
+            Session.async(Session::loginWithGoogle,
+                    user -> navigator.mainMenu(),
+                    error -> {
+                        showError(message, error);
+                        google.setDisable(false);
+                        google.setText("Continue with Google");
+                        cancel.setVisible(false);
+                    });
+        });
+
+        VBox section = new VBox(10, or, google, cancel);
+        section.setAlignment(Pos.CENTER);
+        section.setVisible(false);
+        section.managedProperty().bind(section.visibleProperty());
+        Session.async(GoogleSignIn::available, section::setVisible, error -> { });
+        return section;
     }
 
     static void showError(Label message, String text) {

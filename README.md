@@ -78,7 +78,20 @@ Backend endpoints (all JSON):
 - `PUT /api/auth/me` with `{"displayName"}`, and `PUT /api/auth/me/password` with `{"currentPassword", "newPassword"}`
 - Admins only: `GET /api/admin/users`, and `PUT /api/admin/users/{username}/role` with `{"role": "USER" | "ADMIN"}`. Admins cannot change their own role, so there is always at least one admin.
 
+- `GET /api/auth/google` returns `{"enabled", "clientId"}`, and `POST /api/auth/google` with `{"code", "codeVerifier", "redirectUri"}` returns `{"token", "user"}` (used by the Continue with Google button)
+
 Logins are kept in the backend's memory, so restarting the backend logs everyone out.
+
+### Google sign-in
+
+People can also log in with their Google account. The first time, the backend makes an account with a username taken from their email (for example `grace_hopper`). They can add a password later in My account to log in with their username too. The Continue with Google button only shows when the backend has a Google client id, so the app works the same without it.
+
+To turn it on (one person does this once for the team):
+1. In the [Google Cloud console](https://console.cloud.google.com/), create a project, then open **APIs & Services > OAuth consent screen**, choose **External**, fill in the app name and your email, and add teammates as test users.
+2. Open **Credentials > Create credentials > OAuth client ID** and choose **Desktop app**. Copy the client id and client secret.
+3. In the IntelliJ run configuration for the backend, add the environment variables `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, next to `SUPABASE_SECRET_KEY`. Do not commit them.
+
+The desktop app opens Google's page in the browser and receives the result on a one-off local address, the usual way desktop apps sign in with Google (OAuth with PKCE). The backend trades the result for the user's Google identity and checks it was issued to this app.
 
 ### Adding your screen
 

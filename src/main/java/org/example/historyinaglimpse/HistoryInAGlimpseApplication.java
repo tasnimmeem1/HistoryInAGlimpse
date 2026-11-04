@@ -52,6 +52,7 @@ public class HistoryInAGlimpseApplication extends Application {
         Scene scene = new Scene(root, 1200, 780);
         scene.getStylesheets().add(getClass().getResource("/chart.css").toExternalForm());
         Theme.apply(scene);
+        GoogleSignIn.useBrowser(url -> getHostServices().showDocument(url));
         stage.setTitle("History in a Glimpse");
         stage.setScene(scene);
         stage.setMinWidth(640);

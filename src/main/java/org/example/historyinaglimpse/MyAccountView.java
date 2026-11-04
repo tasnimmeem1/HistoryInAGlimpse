@@ -16,8 +16,10 @@ public final class MyAccountView extends StackPane {
 
         Label title = new Label("My account");
         title.getStyleClass().add("form-title");
-        Label who = new Label("Username: " + Session.user().username() + " · " + Session.role().label());
+        Label who = new Label("Username: " + Session.user().username() + " · " + Session.role().label()
+                + (Session.user().google() ? " · Linked to Google" : ""));
         who.getStyleClass().add("form-hint");
+        who.setWrapText(true);
 
         Label nameHeading = new Label("Display name");
         nameHeading.getStyleClass().add("form-section");
@@ -50,22 +52,40 @@ public final class MyAccountView extends StackPane {
         Button savePassword = new Button("Change password");
         savePassword.setId("account-save-password");
         savePassword.getStyleClass().add("primary-button");
+        // Accounts made with Google have no password until the user adds one.
+        Label googleHint = new Label("You sign in with Google. Add a password to also log in with your username.");
+        googleHint.setId("account-google-hint");
+        googleHint.setWrapText(true);
+        googleHint.getStyleClass().add("form-hint");
+        googleHint.managedProperty().bind(googleHint.visibleProperty());
+        current.managedProperty().bind(current.visibleProperty());
+        Runnable passwordMode = () -> {
+            boolean has = Session.user().hasPassword();
+            passwordHeading.setText(has ? "Change password" : "Add a password");
+            savePassword.setText(has ? "Change password" : "Add password");
+            current.setVisible(has);
+            googleHint.setVisible(!has);
+        };
+        passwordMode.run();
         savePassword.setOnAction(e -> {
-            if (current.getText().isEmpty()) { LoginView.showError(passwordMessage, "Enter your current password."); return; }
+            boolean adding = !Session.user().hasPassword();
+            if (!adding && current.getText().isEmpty()) { LoginView.showError(passwordMessage, "Enter your current password."); return; }
             if (next.getText().length() < 8) { LoginView.showError(passwordMessage, "Passwords need at least 8 characters."); return; }
             if (!next.getText().equals(confirm.getText())) { LoginView.showError(passwordMessage, "The new passwords do not match."); return; }
             savePassword.setDisable(true);
-            Session.async(() -> { Session.changePassword(current.getText(), next.getText()); return true; },
+            Session.async(() -> { Session.changePassword(adding ? null : current.getText(), next.getText()); return true; },
                     done -> {
                         current.clear(); next.clear(); confirm.clear();
-                        showNotice(passwordMessage, "Password changed.");
+                        passwordMode.run();
+                        showNotice(passwordMessage, adding ? "Password added. You can now log in with your username too."
+                                : "Password changed.");
                         savePassword.setDisable(false);
                     },
                     error -> { LoginView.showError(passwordMessage, error); savePassword.setDisable(false); });
         });
 
         VBox card = new VBox(12, title, who, nameHeading, displayName, nameMessage, saveName, new Separator(),
-                passwordHeading, current, next, confirm, passwordMessage, savePassword);
+                passwordHeading, googleHint, current, next, confirm, passwordMessage, savePassword);
         card.getStyleClass().add("form-card");
         card.setMaxWidth(460);
         card.setMaxHeight(Region.USE_PREF_SIZE);

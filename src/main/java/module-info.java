@@ -4,6 +4,8 @@ module org.example.historyinaglimpse {
     requires java.desktop;
     requires java.net.http;
     requires java.prefs;
+    // Receives the browser's return from Google sign-in on a local address.
+    requires jdk.httpserver;
     requires com.fasterxml.jackson.databind;
 
 
