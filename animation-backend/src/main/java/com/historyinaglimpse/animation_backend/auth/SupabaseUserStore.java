@@ -78,8 +78,10 @@ public class SupabaseUserStore implements UserStore {
         Map<String, String> row = new HashMap<>();
         row.put("username", username);
         row.put("display_name", displayName);
-        row.put("password_hash", passwordHash);
-        row.put("google_sub", googleSub);
+        // Leave out empty columns, so password sign-up still works on a table
+        // made before Google sign-in added google_sub.
+        if (passwordHash != null) row.put("password_hash", passwordHash);
+        if (googleSub != null) row.put("google_sub", googleSub);
         row.put("role", role.name());
         try {
             List<UserAccount> rows = client.post().uri("/rest/v1/app_users")
