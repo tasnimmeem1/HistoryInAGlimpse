@@ -1,10 +1,27 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.historyinaglimpse.animation_backend.AnimationBackendApplication" />
-    <module name="animation-backend" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/animation-backend" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
+  <configuration default="false" name="Backend" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="myGeneralSettings" />
+      <option name="myRunnerSettings" />
+      <option name="myRunnerParameters">
+        <MavenRunnerParameters>
+          <option name="profiles">
+            <set />
+          </option>
+          <option name="goals">
+            <list>
+              <option value="spring-boot:run" />
+            </list>
+          </option>
+          <option name="pomFileName" />
+          <option name="profilesMap">
+            <map />
+          </option>
+          <option name="resolveToWorkspace" value="false" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/animation-backend" />
+        </MavenRunnerParameters>
+      </option>
+    </MavenSettings>
+    <method v="2" />
   </configuration>
 </component>

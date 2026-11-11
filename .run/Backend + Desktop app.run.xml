@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Backend + Desktop app" type="CompoundRunConfigurationType">
-    <toRun name="Backend" type="Application" />
+    <toRun name="Backend" type="MavenRunConfiguration" />
     <toRun name="Desktop app" type="Application" />
     <method v="2" />
   </configuration>
