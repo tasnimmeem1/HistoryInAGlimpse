@@ -19,9 +19,9 @@ public class SupabaseSceneService {
 
         if (key.isBlank()) {
             throw new IllegalStateException(
-                    "SUPABASE_SECRET_KEY is missing. Copy animation-backend/.env.example to "
-                    + "animation-backend/.env, paste the key after SUPABASE_SECRET_KEY=, "
-                    + "then run the backend again.");
+                    "SUPABASE_SECRET_KEY is missing. In IntelliJ open Run > Edit Configurations, pick "
+                    + "AnimationBackendApplication, and add SUPABASE_SECRET_KEY=your key under "
+                    + "Environment variables. Then run the backend again.");
         }
 
         client = RestClient.builder()
