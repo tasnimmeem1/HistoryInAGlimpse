@@ -7,9 +7,11 @@ JavaFX desktop history explorer with a Spring Boot backend and private Supabase 
 1. Extract this ZIP into a NEW folder. Open its **HistoryInAGlimpse** folder in IntelliJ. Do not paste this whole project inside the old animation-backend folder.
 2. Reload the root pom.xml. Link animation-backend/pom.xml as a Maven project if IntelliJ does not show it.
 3. Use your JDK 25 (backend requires Java 21 or newer).
-4. Set **SUPABASE_SECRET_KEY** in the backend run configuration to your existing secret. Credentials are not included in this download.
-5. Run **AnimationBackendApplication**. Keep it running.
-6. Run **Launcher** in package **org.example.historyinaglimpse** for the desktop.
+4. Copy `animation-backend/.env.example` to `animation-backend/.env` and paste the Supabase secret key after `SUPABASE_SECRET_KEY=`. Do this once. Git ignores `.env`, so the key never goes to GitHub. Ask the team for the key.
+5. In the run menu next to the green play button, pick **Backend** and run it. Wait for `Backend ready on http://127.0.0.1:8080` in the Run window, and keep it running.
+6. Pick **Desktop app** and run it.
+
+Or pick **Backend + Desktop app** to start both with one click. Give the backend a few seconds before you log in.
 
 The backend listens on http://127.0.0.1:8080. Change the desktop backend address with JVM option `-Dhistory.animation.backend=http://127.0.0.1:8080` only if necessary.
 
@@ -83,8 +85,8 @@ Backend endpoints (all JSON):
 Logins are kept in the backend's memory, so restarting the backend logs everyone out.
 
 If you can't log in or register, read the message on the login form:
-- *Cannot reach the server*: start **AnimationBackendApplication** first. Each of us runs our own backend.
-- *Supabase refused the backend's key*: set `SUPABASE_SECRET_KEY` in the backend run configuration (ask the team for it).
+- *Cannot reach the server*: start **Backend** first and wait for "Backend ready". Each of us runs our own backend.
+- *Supabase refused the backend's key*: check `SUPABASE_SECRET_KEY` in `animation-backend/.env`.
 - *The account table is missing* or *out of date*: run `sql/app_users.sql` in the Supabase SQL editor.
 - *Wrong username or password*: accounts are shared through Supabase, so register once and use the same login on every computer.
 
@@ -95,7 +97,7 @@ People can also log in with their Google account. The first time, the backend ma
 To turn it on (one person does this once for the team):
 1. In the [Google Cloud console](https://console.cloud.google.com/), create a project, then open **APIs & Services > OAuth consent screen**, choose **External**, fill in the app name and your email, and add teammates as test users.
 2. Open **Credentials > Create credentials > OAuth client ID** and choose **Desktop app**. Copy the client id and client secret.
-3. In the IntelliJ run configuration for the backend, add the environment variables `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, next to `SUPABASE_SECRET_KEY`. Do not commit them.
+3. Put the client id and secret after `GOOGLE_CLIENT_ID=` and `GOOGLE_CLIENT_SECRET=` in `animation-backend/.env`, next to the Supabase key. Do not commit them.
 
 The desktop app opens Google's page in the browser and receives the result on a one-off local address, the usual way desktop apps sign in with Google (OAuth with PKCE). The backend trades the result for the user's Google identity and checks it was issued to this app.
 
