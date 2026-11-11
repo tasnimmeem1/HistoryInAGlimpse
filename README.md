@@ -69,7 +69,7 @@ The app opens on the splash screen, then the login screen. People can log in, cr
 | USER | anyone who registers | timeline, shared stories, saved history and reports |
 | ADMIN | promoted by another admin, or in the database for the first one | everything, plus Manage accounts |
 
-One-time database setup: run `sql/app_users.sql` in the Supabase SQL editor. To make an admin, register normally, then run `update public.app_users set role = 'ADMIN' where username = '...';`.
+Database setup: run `sql/app_users.sql` in the Supabase SQL editor. Running it again is safe, and it upgrades a table made by an older copy of the script. To make an admin, register normally, then run `update public.app_users set role = 'ADMIN' where username = '...';`.
 
 Backend endpoints (all JSON):
 - `POST /api/auth/register` with `{"username", "displayName", "password"}`
@@ -81,6 +81,12 @@ Backend endpoints (all JSON):
 - `GET /api/auth/google` returns `{"enabled", "clientId"}`, and `POST /api/auth/google` with `{"code", "codeVerifier", "redirectUri"}` returns `{"token", "user"}` (used by the Continue with Google button)
 
 Logins are kept in the backend's memory, so restarting the backend logs everyone out.
+
+If you can't log in or register, read the message on the login form:
+- *Cannot reach the server*: start **AnimationBackendApplication** first. Each of us runs our own backend.
+- *Supabase refused the backend's key*: set `SUPABASE_SECRET_KEY` in the backend run configuration (ask the team for it).
+- *The account table is missing* or *out of date*: run `sql/app_users.sql` in the Supabase SQL editor.
+- *Wrong username or password*: accounts are shared through Supabase, so register once and use the same login on every computer.
 
 ### Google sign-in
 
