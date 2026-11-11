@@ -19,7 +19,9 @@ public class SupabaseSceneService {
 
         if (key.isBlank()) {
             throw new IllegalStateException(
-                    "SUPABASE_SECRET_KEY is missing.");
+                    "SUPABASE_SECRET_KEY is missing. Copy animation-backend/.env.example to "
+                    + "animation-backend/.env, paste the key after SUPABASE_SECRET_KEY=, "
+                    + "then run the backend again.");
         }
 
         client = RestClient.builder()
