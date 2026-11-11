@@ -1,5 +1,6 @@
 -- User accounts for History in a Glimpse.
--- Run once in the Supabase SQL editor. Only the backend reads this table,
+-- Run in the Supabase SQL editor. Running it again is safe, and upgrades a table
+-- made by an older copy of this script. Only the backend reads this table,
 -- using the secret key, so row level security stays on with no policies.
 
 create table if not exists public.app_users (
@@ -10,10 +11,28 @@ create table if not exists public.app_users (
     google_sub    text unique,          -- Google's id for the user, set by Google sign-in
     role          text not null default 'USER' check (role in ('USER', 'ADMIN')),
     created_at    timestamptz not null default now(),
-    check (password_hash is not null or google_sub is not null)
+    constraint app_users_password_or_google check (password_hash is not null or google_sub is not null)
 );
 
 alter table public.app_users enable row level security;
+
+-- Upgrades a table made by an older copy of this script (before Google sign-in).
+-- Safe to run again: every step checks first.
+alter table public.app_users add column if not exists google_sub text;
+alter table public.app_users alter column password_hash drop not null;
+do $$
+begin
+    if not exists (select 1 from pg_constraint where conname = 'app_users_google_sub_key') then
+        alter table public.app_users add constraint app_users_google_sub_key unique (google_sub);
+    end if;
+    if not exists (select 1 from pg_constraint where conname = 'app_users_password_or_google') then
+        alter table public.app_users add constraint app_users_password_or_google
+            check (password_hash is not null or google_sub is not null);
+    end if;
+end $$;
+
+-- Tell the Supabase API about the new column straight away.
+notify pgrst, 'reload schema';
 
 -- To make someone an admin after they register:
 -- update public.app_users set role = 'ADMIN' where username = 'their_name';

@@ -1,5 +1,7 @@
 package com.historyinaglimpse.animation_backend.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import java.util.Optional;
 @Repository
 public class SupabaseUserStore implements UserStore {
     private static final ParameterizedTypeReference<List<UserAccount>> ROWS = new ParameterizedTypeReference<>() {};
+    private static final Logger LOG = LoggerFactory.getLogger(SupabaseUserStore.class);
     private final RestClient client;
 
     public SupabaseUserStore(@Value("${supabase.url}") String url, @Value("${supabase.secret-key}") String key) {
@@ -42,7 +45,7 @@ public class SupabaseUserStore implements UserStore {
                     .retrieve().body(ROWS);
             return rows == null ? Optional.empty() : rows.stream().findFirst();
         } catch (RestClientException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not reach the account database.");
+            throw failure(ex, "Could not reach the account database.");
         }
     }
 
@@ -52,7 +55,7 @@ public class SupabaseUserStore implements UserStore {
                     .retrieve().body(ROWS);
             return rows == null ? List.of() : rows;
         } catch (RestClientException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not reach the account database.");
+            throw failure(ex, "Could not reach the account database.");
         }
     }
 
@@ -69,7 +72,7 @@ public class SupabaseUserStore implements UserStore {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account with that username.");
             return rows.get(0);
         } catch (RestClientException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not save the account.");
+            throw failure(ex, "Could not save the account.");
         }
     }
 
@@ -78,8 +81,10 @@ public class SupabaseUserStore implements UserStore {
         Map<String, String> row = new HashMap<>();
         row.put("username", username);
         row.put("display_name", displayName);
-        row.put("password_hash", passwordHash);
-        row.put("google_sub", googleSub);
+        // Leave out empty columns, so password sign-up still works on a table
+        // made before Google sign-in added google_sub.
+        if (passwordHash != null) row.put("password_hash", passwordHash);
+        if (googleSub != null) row.put("google_sub", googleSub);
         row.put("role", role.name());
         try {
             List<UserAccount> rows = client.post().uri("/rest/v1/app_users")
@@ -94,9 +99,31 @@ public class SupabaseUserStore implements UserStore {
             // 409 is a unique constraint: almost always the username.
             if (ex.getStatusCode().value() == 409)
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "That username is taken.");
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not save the account.");
+            throw failure(ex, "Could not save the account.");
         } catch (RestClientException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Could not reach the account database.");
+            throw failure(ex, "Could not reach the account database.");
         }
+    }
+
+    /**
+     * Turns a Supabase error into a message that says how to fix it, since it
+     * is shown on the login form. Setup mistakes are the usual cause.
+     */
+    static ResponseStatusException failure(RestClientException ex, String fallback) {
+        String message = fallback;
+        if (ex instanceof RestClientResponseException response) {
+            int status = response.getStatusCode().value();
+            String body = response.getResponseBodyAsString();
+            LOG.warn("Supabase answered {}: {}", status, body);
+            if (status == 401 || status == 403)
+                message = "Supabase refused the backend's key. Check SUPABASE_SECRET_KEY in the backend run configuration.";
+            else if (body.contains("PGRST205") || body.contains("42P01"))
+                message = "The account table is missing. Run sql/app_users.sql in the Supabase SQL editor.";
+            else if (body.contains("PGRST204") || body.contains("42703"))
+                message = "The account table is out of date. Run sql/app_users.sql again in the Supabase SQL editor.";
+        } else {
+            LOG.warn("Could not reach Supabase: {}", ex.getMessage());
+        }
+        return new ResponseStatusException(HttpStatus.BAD_GATEWAY, message);
     }
 }
