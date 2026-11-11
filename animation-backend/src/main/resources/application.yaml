@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: animation-backend
+  config:
+    # Where SUPABASE_SECRET_KEY can come from when it is not typed into the run configuration:
+    # a .env file next to this backend (copy .env.example). Git ignores that file.
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:animation-backend/.env[.properties]
+  web:
+    error:
+      # Send error reasons to the desktop app (shown on the login form).
+      include-message: always
+
+supabase:
+  url: https://seqwvzedxfqeytscrwsr.supabase.co
+  # The key is never written here. It comes from the environment variable SUPABASE_SECRET_KEY.
+  secret-key: ${SUPABASE_SECRET_KEY:}
+
+server:
+  address: 127.0.0.1
+  port: 8080
+
+# Optional Google sign-in. Empty unless set, and then the Google button stays hidden.
+google:
+  client-id: ${GOOGLE_CLIENT_ID:}
+  client-secret: ${GOOGLE_CLIENT_SECRET:}
