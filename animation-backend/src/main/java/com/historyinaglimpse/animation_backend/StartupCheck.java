@@ -7,7 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-/** Says in the run window when the backend is ready, so people know when to start the desktop app. */
+/** Says in the run window when the backend is ready, so people know when to start the Launcher. */
 @Component
 class StartupCheck {
     private static final Logger LOG = LoggerFactory.getLogger(StartupCheck.class);
@@ -21,6 +21,6 @@ class StartupCheck {
 
     @EventListener(ApplicationReadyEvent.class)
     void report() {
-        LOG.info("Backend ready on http://{}:{}. Now start the desktop app.", address, port);
+        LOG.info("Backend ready on http://{}:{}. Now start the Launcher.", address, port);
     }
 }
