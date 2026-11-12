@@ -9,7 +9,7 @@ JavaFX desktop history explorer with a Spring Boot backend and private Supabase 
 3. Use your JDK 25 (backend requires Java 21 or newer).
 4. Open `animation-backend/src/main/java/com/historyinaglimpse/animation_backend/AnimationBackendApplication`, click the green play button next to the class name, and choose **Run 'AnimationBackendApplication'**. It stops with "SUPABASE_SECRET_KEY is missing" the first time. That is expected.
 5. Open **Run > Edit Configurations…**, pick **AnimationBackendApplication**, and in **Environment variables** enter `SUPABASE_SECRET_KEY=` followed by the Supabase secret key. If the box is not shown, click **Modify options > Environment variables**. Do this once. IntelliJ keeps it in the `.idea` folder, which git ignores, so the key never goes to GitHub. Ask the team for the key.
-6. Run **AnimationBackendApplication** again. Wait for `Backend ready on http://127.0.0.1:8080` in the Run window, and keep it running.
+6. Run **AnimationBackendApplication** again. Wait for `Started AnimationBackendApplication` in the Run window, and keep it running.
 7. Pick **Launcher** and run it.
 
 The backend listens on http://127.0.0.1:8080. Change the desktop backend address with JVM option `-Dhistory.animation.backend=http://127.0.0.1:8080` only if necessary.
@@ -84,7 +84,7 @@ Backend endpoints (all JSON):
 Logins are kept in the backend's memory, so restarting the backend logs everyone out.
 
 If you can't log in or register, read the message on the login form:
-- *Cannot reach the server*: start **AnimationBackendApplication** first and wait for "Backend ready". Each of us runs our own backend.
+- *Cannot reach the server*: start **AnimationBackendApplication** first and wait for "Started AnimationBackendApplication". Each of us runs our own backend.
 - *Supabase refused the backend's key*: check `SUPABASE_SECRET_KEY` in the Environment variables of the **AnimationBackendApplication** run configuration.
 - *The account table is missing* or *out of date*: run `sql/app_users.sql` in the Supabase SQL editor.
 - *Wrong username or password*: accounts are shared through Supabase, so register once and use the same login on every computer.
