@@ -10,7 +10,7 @@ JavaFX desktop history explorer with a Spring Boot backend and private Supabase 
 4. Open `animation-backend/src/main/java/com/historyinaglimpse/animation_backend/AnimationBackendApplication`, click the green play button next to the class name, and choose **Run 'AnimationBackendApplication'**. It stops with "SUPABASE_SECRET_KEY is missing" the first time. That is expected.
 5. Open **Run > Edit Configurations…**, pick **AnimationBackendApplication**, and in **Environment variables** enter `SUPABASE_SECRET_KEY=` followed by the Supabase secret key. If the box is not shown, click **Modify options > Environment variables**. Do this once. IntelliJ keeps it in the `.idea` folder, which git ignores, so the key never goes to GitHub. Ask the team for the key.
 6. Run **AnimationBackendApplication** again. Wait for `Backend ready on http://127.0.0.1:8080` in the Run window, and keep it running.
-7. Pick **Desktop app** and run it.
+7. Pick **Launcher** and run it. This opens the desktop app.
 
 The backend listens on http://127.0.0.1:8080. Change the desktop backend address with JVM option `-Dhistory.animation.backend=http://127.0.0.1:8080` only if necessary.
 

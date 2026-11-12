@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Desktop app" type="Application" factoryName="Application">
+  <configuration default="false" name="Launcher" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="org.example.historyinaglimpse.Launcher" />
     <module name="HistoryInAGlimpse" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
