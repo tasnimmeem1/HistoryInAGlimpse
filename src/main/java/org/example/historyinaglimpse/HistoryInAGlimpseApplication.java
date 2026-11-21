@@ -15,7 +15,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-/** Native JavaFX desktop demo: an original timeline overview and animated story. */
+/**
+ * Native JavaFX desktop demo: an original timeline overview and animated story.
+ */
 public class HistoryInAGlimpseApplication extends Application {
     private final BorderPane root = new BorderPane();
     private final ScrollPane chartScroll = new ScrollPane();
@@ -37,7 +39,8 @@ public class HistoryInAGlimpseApplication extends Application {
         return image;
     }
 
-    @Override public void start(Stage stage) {
+    @Override
+    public void start(Stage stage) {
         navigator = new Navigator(root, this::stopAnimation);
         registerFeatures();
         buildOriginalChart();
@@ -66,17 +69,22 @@ public class HistoryInAGlimpseApplication extends Application {
         stopAnimation();
         Label title = new Label("History in a Glimpse");
         title.getStyleClass().add("splash-title");
-        title.setWrapText(true); title.setMaxWidth(850);
+        title.setWrapText(true);
+        title.setMaxWidth(850);
         title.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         Label subtitle = new Label("Explore history through illustrated stories");
-        subtitle.getStyleClass().add("splash-subtitle"); subtitle.setWrapText(true);
+        subtitle.getStyleClass().add("splash-subtitle");
+        subtitle.setWrapText(true);
         subtitle.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
-        Separator divider = new Separator(); divider.setMaxWidth(240);
+        Separator divider = new Separator();
+        divider.setMaxWidth(240);
         Label credit = new Label("Inspired by Sebastian C. Adams");
-        credit.getStyleClass().add("splash-credit"); credit.setWrapText(true);
+        credit.getStyleClass().add("splash-credit");
+        credit.setWrapText(true);
         credit.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         Label chartName = new Label("Synchronological Chart of Universal History");
-        chartName.setWrapText(true); chartName.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        chartName.setWrapText(true);
+        chartName.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         for (Label label : java.util.List.of(title, subtitle, credit, chartName)) {
             label.setAlignment(javafx.geometry.Pos.CENTER);
             label.setMinWidth(0);
@@ -84,15 +92,23 @@ public class HistoryInAGlimpseApplication extends Application {
         Hyperlink reference = new Hyperlink("View the historical inspiration");
         reference.setOnAction(e -> getHostServices().showDocument("https://www.davidrumsey.com/blog/2012/3/28/timeline-maps"));
         Button enter = button("Explore history", () -> {
-            if (Session.loggedIn()) navigator.mainMenu(); else navigator.login();
+            if (Session.loggedIn()) navigator.mainMenu();
+            else navigator.login();
         });
-        enter.setId("enter-history"); enter.setDefaultButton(true); enter.getStyleClass().add("splash-enter");
+        enter.setId("enter-history");
+        enter.setDefaultButton(true);
+        enter.getStyleClass().add("splash-enter");
         VBox content = new VBox(22, title, subtitle, divider, credit, chartName, reference, enter);
-        content.setAlignment(javafx.geometry.Pos.CENTER); content.setPadding(new Insets(60));
-        content.setMaxWidth(1000); content.getStyleClass().add("splash-card");
-        StackPane splash = new StackPane(content); splash.getStyleClass().add("splash-root");
+        content.setAlignment(javafx.geometry.Pos.CENTER);
+        content.setPadding(new Insets(60));
+        content.setMaxWidth(1000);
+        content.getStyleClass().add("splash-card");
+        StackPane splash = new StackPane(content);
+        splash.getStyleClass().add("splash-root");
         splash.setPadding(new Insets(45));
-        root.setTop(null); root.setBottom(null); root.setCenter(splash);
+        root.setTop(null);
+        root.setBottom(null);
+        root.setCenter(splash);
     }
 
     private void buildOriginalChart() {
@@ -105,15 +121,26 @@ public class HistoryInAGlimpseApplication extends Application {
         stopAnimation();
         if (event.title().equals("Newton's Principia") || event.title().equals("Newton’s laws of motion")) {
             newtonView = new NewtonLawsView(this::showChart);
-            root.setTop(null); root.setBottom(null); root.setCenter(newtonView);
+            root.setTop(null);
+            root.setBottom(null);
+            root.setCenter(newtonView);
             return;
         }
-        if(event.title().equals("Watt condenser patent")) {
-            wattView=new WattCondenserView(this::showChart);
-            root.setTop(null);root.setBottom(null);root.setCenter(wattView);return;
+        if (event.title().equals("Watt condenser patent")) {
+            wattView = new WattCondenserView(this::showChart);
+            root.setTop(null);
+            root.setBottom(null);
+            root.setCenter(wattView);
+            return;
         }
-        String modernId=BatchCatalog.id(event);
-        if(!modernId.isBlank()){modernView=new ModernBatchView(modernId,event.title(),this::showChart);root.setTop(null);root.setBottom(null);root.setCenter(modernView);return;}
+        String modernId = BatchCatalog.id(event);
+        if (!modernId.isBlank()) {
+            modernView = new ModernBatchView(modernId, event.title(), this::showChart);
+            root.setTop(null);
+            root.setBottom(null);
+            root.setCenter(modernView);
+            return;
+        }
         boolean campScene = EventCatalog.EVENTS.indexOf(event) == 11;
         boolean farmingScene = EventCatalog.EVENTS.indexOf(event) == 13;
         String cloudSceneId = CloudEraCatalog.sceneId(event);
@@ -131,13 +158,42 @@ public class HistoryInAGlimpseApplication extends Application {
         root.setTop(new ToolBar(button("← Back to chart", this::showChart), heading,
                 description, new Label("Volume"), volume));
 
-        // Reserved for the teammate responsible for historical content.
-        StackPane reading = new StackPane();
+
+        // Historical information panel
+        Label historyTitle = new Label(event.title());
+        historyTitle.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e3329;");
+        historyTitle.setWrapText(true);
+
+        Label historyDate = new Label(event.date());
+        historyDate.setStyle("-fx-font-size: 16px; -fx-text-fill: #806347;");
+
+        Separator separator = new Separator();
+
+        Label overviewTitle = new Label("Historical Overview");
+        overviewTitle.setStyle("-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #4e3329;");
+
+        Label historyDescription = new Label(event.description());
+        historyDescription.setWrapText(true);
+        historyDescription.setStyle("-fx-font-size: 16px; -fx-text-fill: #4e3329;");
+        historyDescription.setMaxWidth(Double.MAX_VALUE);
+
+        Hyperlink sourceLink = new Hyperlink("View Historical Source");
+        sourceLink.setWrapText(true);
+        sourceLink.setOnAction(e -> getHostServices().showDocument(event.source()));
+
+        VBox historyContent = new VBox(18, historyTitle, historyDate, separator, overviewTitle, historyDescription, new Separator(), sourceLink);
+
+        historyContent.setPadding(new Insets(25));
+        historyContent.setStyle("-fx-background-color: #f4ead3;");
+
+        ScrollPane historyScroll = new ScrollPane(historyContent);
+        historyScroll.setFitToWidth(true);
+        historyScroll.setStyle("-fx-background-color: #f4ead3;");
+
+        StackPane reading = new StackPane(historyScroll);
         reading.setId("reserved-history-panel");
         reading.setMinWidth(220);
-        reading.setStyle("-fx-background-color:#f4ead3;");
-        description.setDisable(true);
-        description.setTooltip(new Tooltip("Available when historical content is added."));
+
 
         StackPane picture;
         if (campScene) {
@@ -154,8 +210,11 @@ public class HistoryInAGlimpseApplication extends Application {
             storyAnimation = farming.animation();
         } else {
             if (event.illustrationSheet().isBlank()) {
-                Label name = new Label(event.title()); name.getStyleClass().add("story-title"); name.setWrapText(true);
-                VBox inscription = new VBox(28, name, note(event.date())); inscription.setPadding(new Insets(48));
+                Label name = new Label(event.title());
+                name.getStyleClass().add("story-title");
+                name.setWrapText(true);
+                VBox inscription = new VBox(28, name, note(event.date()));
+                inscription.setPadding(new Insets(48));
                 picture = new StackPane(inscription);
             } else {
                 Image atlas = asset(event.illustrationSheet());
@@ -163,9 +222,10 @@ public class HistoryInAGlimpseApplication extends Application {
                 int columns = event.illustrationSheet().equals("prehistory-vignettes.png") ? 3 : 4;
                 int rows = event.illustrationSheet().equals("prehistory-vignettes.png") ? 2 : 3;
                 ImageView art = new ImageView(atlas);
-                double w = atlas.getWidth()/columns, h = atlas.getHeight()/rows;
-                art.setViewport(new Rectangle2D((index%columns)*w, (index/columns)*h, w, h));
-                art.setPreserveRatio(true); picture = new StackPane(art);
+                double w = atlas.getWidth() / columns, h = atlas.getHeight() / rows;
+                art.setViewport(new Rectangle2D((index % columns) * w, (index / columns) * h, w, h));
+                art.setPreserveRatio(true);
+                picture = new StackPane(art);
                 art.fitWidthProperty().bind(picture.widthProperty().subtract(40));
                 art.fitHeightProperty().bind(picture.heightProperty().subtract(40));
             }
@@ -208,7 +268,7 @@ public class HistoryInAGlimpseApplication extends Application {
         volume.valueProperty().addListener((o, a, value) -> current.setVolume(value.doubleValue()));
         visuals.getSelectionModel().selectedItemProperty().addListener((o, oldTab, selected) -> {
             boolean showingScene = selected == sceneTab;
-            description.setDisable(true);
+            description.setDisable(false);
             current.setActive(showingScene);
         });
         SplitPane split = new SplitPane(visuals, reading);
@@ -220,22 +280,29 @@ public class HistoryInAGlimpseApplication extends Application {
 
     private void showEventLibrary() {
         stopAnimation();
-        TextField search = new TextField(); search.setPromptText("Search rulers, inventions, events or civilizations");
-        VBox entries = new VBox(10); entries.setPadding(new Insets(20));
+        TextField search = new TextField();
+        search.setPromptText("Search rulers, inventions, events or civilizations");
+        VBox entries = new VBox(10);
+        entries.setPadding(new Insets(20));
         Runnable update = () -> {
             entries.getChildren().clear();
             String query = search.getText().toLowerCase(java.util.Locale.ROOT).trim();
             EventCatalog.EVENTS.stream().filter(TimelineSearch::included).filter(e -> (e.title() + " " + e.date() + " " + e.description()).toLowerCase(java.util.Locale.ROOT).contains(query))
-                .sorted(java.util.Comparator.comparingInt(HistoricalEvent::year)).forEach(event -> {
-                    Button entry = button(event.title() + " • " + event.date(), () -> showEvent(event));
-                    entry.setWrapText(true); entry.setMaxWidth(Double.MAX_VALUE); entries.getChildren().add(entry);
-                });
+                    .sorted(java.util.Comparator.comparingInt(HistoricalEvent::year)).forEach(event -> {
+                        Button entry = button(event.title() + " • " + event.date(), () -> showEvent(event));
+                        entry.setWrapText(true);
+                        entry.setMaxWidth(Double.MAX_VALUE);
+                        entries.getChildren().add(entry);
+                    });
             if (entries.getChildren().isEmpty()) entries.getChildren().add(note("No matching history entries."));
         };
-        search.textProperty().addListener((o, a, b) -> update.run()); update.run();
-        ScrollPane list = new ScrollPane(entries); list.setFitToWidth(true);
+        search.textProperty().addListener((o, a, b) -> update.run());
+        update.run();
+        ScrollPane list = new ScrollPane(entries);
+        list.setFitToWidth(true);
         root.setTop(new VBox(new ToolBar(button("← Back to chart", this::showChart), new Label("Historical events")), search));
-        root.setCenter(list); root.setBottom(null);
+        root.setCenter(list);
+        root.setBottom(null);
     }
 
 
@@ -283,7 +350,9 @@ public class HistoryInAGlimpseApplication extends Application {
         javafx.application.Platform.runLater(this::fitChartHeight);
     }
 
-    /** Fit the full chart and its year ruler, retaining horizontal navigation. */
+    /**
+     * Fit the full chart and its year ruler, retaining horizontal navigation.
+     */
     private void fitChartHeight() {
         double height = chartScroll.getViewportBounds().getHeight();
         if (height <= 0) return;
@@ -301,12 +370,29 @@ public class HistoryInAGlimpseApplication extends Application {
     }
 
     private void stopAnimation() {
-        if(modernView!=null){modernView.close();modernView=null;}
-        if(wattView!=null){wattView.close();wattView=null;}
-        if (newtonView != null) { newtonView.close(); newtonView = null; }
-        if (storyAnimation != null) { storyAnimation.stop(); storyAnimation = null; }
-        if (playback != null) { playback.close(); playback = null; }
+        if (modernView != null) {
+            modernView.close();
+            modernView = null;
+        }
+        if (wattView != null) {
+            wattView.close();
+            wattView = null;
+        }
+        if (newtonView != null) {
+            newtonView.close();
+            newtonView = null;
+        }
+        if (storyAnimation != null) {
+            storyAnimation.stop();
+            storyAnimation = null;
+        }
+        if (playback != null) {
+            playback.close();
+            playback = null;
+        }
     }
 
-    public static void main(String[] args) { launch(args); }
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
