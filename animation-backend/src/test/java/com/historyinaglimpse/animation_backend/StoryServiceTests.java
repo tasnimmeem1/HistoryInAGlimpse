@@ -52,19 +52,35 @@ class StoryServiceTests {
     @Test
     void createsListsUpdatesAndDeletesStoriesWithAuthorChecks() {
         StoryController.StoryRequest input = new StoryController.StoryRequest(
-                " A story ", " History happened. ", " ancient ");
+                " A story ", " History happened. ", " ancient ",
+                "c. 1200 BCE", "Ur", 30.96, 46.10);
         Story created = stories.create(ada, input);
         assertEquals("ada", created.authorUsername());
         assertEquals("Ada", created.authorDisplayName());
         assertEquals("A story", created.title());
         assertEquals("History happened.", created.content());
         assertEquals("ancient", created.tags());
+        assertEquals("c. 1200 BCE", created.historicalDate());
+        assertEquals("Ur", created.placeName());
+        assertEquals(30.96, created.latitude());
         assertEquals(created.createdAt(), created.updatedAt());
         assertEquals(List.of(created), stories.list(ada));
         assertEquals(List.of(created), stories.list(grace));
 
+        byte[] png = {(byte) 0x89, 'P', 'N', 'G', 13, 10, 26, 10};
+        Story withImage = stories.uploadImage(ada, created.id(), "image/png", png);
+        assertTrue(withImage.hasImage());
+        StoryService.StoryImage downloaded = stories.image(grace, created.id());
+        assertEquals("image/png", downloaded.contentType());
+        assertArrayEquals(png, downloaded.data());
+        assertEquals(HttpStatus.BAD_REQUEST, status(() ->
+                stories.uploadImage(ada, created.id(), "image/svg+xml", png)));
+        assertEquals(HttpStatus.NOT_FOUND, status(() ->
+                stories.uploadImage(grace, created.id(), "image/png", png)));
+
         Story updated = stories.update(ada, created.id(),
-                new StoryController.StoryRequest("Updated", "Changed text", "roman"));
+                new StoryController.StoryRequest("Updated", "Changed text", "roman",
+                        "1200 BCE", "Ur", 30.96, 46.10));
         assertEquals("Updated", updated.title());
         assertEquals("Ada", updated.authorDisplayName());
         assertEquals(created.createdAt(), updated.createdAt());
@@ -73,6 +89,7 @@ class StoryServiceTests {
 
         assertEquals(HttpStatus.NOT_FOUND, status(() -> stories.update(grace, created.id(), input)));
         assertEquals(HttpStatus.NOT_FOUND, status(() -> stories.delete(grace, created.id())));
+        assertEquals(HttpStatus.UNAUTHORIZED, status(() -> stories.image(null, created.id())));
         stories.delete(ada, created.id());
         assertTrue(stories.list(ada).isEmpty());
     }
@@ -80,7 +97,9 @@ class StoryServiceTests {
     @Test
     void validatesStoryInputAndRequiresLogin() {
         assertEquals(HttpStatus.BAD_REQUEST, status(() -> stories.create(ada,
-                new StoryController.StoryRequest("", "content", ""))));
+                new StoryController.StoryRequest("", "content", "", "1 CE", "", null, null))));
+        assertEquals(HttpStatus.BAD_REQUEST, status(() -> stories.create(ada,
+                new StoryController.StoryRequest("title", "content", "", "1 CE", "", 0.0, null))));
         assertEquals(HttpStatus.UNAUTHORIZED, status(() -> stories.list(null)));
     }
 

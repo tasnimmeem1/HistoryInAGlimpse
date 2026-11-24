@@ -5,9 +5,22 @@ CREATE TABLE IF NOT EXISTS shared_stories (
     title VARCHAR(120) NOT NULL,
     content CLOB NOT NULL,
     tags VARCHAR(200) NOT NULL DEFAULT '',
+    historical_date VARCHAR(100) NOT NULL DEFAULT '',
+    place_name VARCHAR(120) NOT NULL DEFAULT '',
+    latitude DOUBLE,
+    longitude DOUBLE,
+    image_content_type VARCHAR(40),
+    image_data BLOB,
     created_at VARCHAR(40) NOT NULL,
     updated_at VARCHAR(40) NOT NULL
 );
+
+ALTER TABLE shared_stories ADD COLUMN IF NOT EXISTS historical_date VARCHAR(100) NOT NULL DEFAULT '';
+ALTER TABLE shared_stories ADD COLUMN IF NOT EXISTS place_name VARCHAR(120) NOT NULL DEFAULT '';
+ALTER TABLE shared_stories ADD COLUMN IF NOT EXISTS latitude DOUBLE;
+ALTER TABLE shared_stories ADD COLUMN IF NOT EXISTS longitude DOUBLE;
+ALTER TABLE shared_stories ADD COLUMN IF NOT EXISTS image_content_type VARCHAR(40);
+ALTER TABLE shared_stories ADD COLUMN IF NOT EXISTS image_data BLOB;
 
 CREATE INDEX IF NOT EXISTS shared_stories_created_at_idx ON shared_stories(created_at);
 CREATE INDEX IF NOT EXISTS shared_stories_author_idx ON shared_stories(author_username);

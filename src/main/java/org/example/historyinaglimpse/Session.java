@@ -21,8 +21,12 @@ public final class Session {
     public record SavedSelection(String recordId, String savedAt) { }
     public record SaveSelectionRequest(String recordId) { }
     public record Story(Long id, String authorUsername, String authorDisplayName, String title,
-                        String content, String tags, String createdAt, String updatedAt) { }
-    public record StoryRequest(String title, String content, String tags) { }
+                        String content, String tags, String historicalDate, String placeName,
+                        Double latitude, Double longitude, boolean hasImage,
+                        String createdAt, String updatedAt) { }
+    public record StoryRequest(String title, String content, String tags, String historicalDate,
+                               String placeName, Double latitude, Double longitude) { }
+    public record ImageUpload(String contentType, byte[] data) { }
 
     private static volatile User user;
     private static volatile String token;
@@ -97,16 +101,29 @@ public final class Session {
         return java.util.List.of(ApiClient.get("/api/contributions", Story[].class));
     }
 
-    public static Story createStory(String title, String content, String tags) {
-        return ApiClient.post("/api/contributions", new StoryRequest(title, content, tags), Story.class);
+    public static Story createStory(String title, String content, String tags, String date,
+                                    String place, Double latitude, Double longitude) {
+        return ApiClient.post("/api/contributions",
+                new StoryRequest(title, content, tags, date, place, latitude, longitude), Story.class);
     }
 
-    public static Story updateStory(long id, String title, String content, String tags) {
-        return ApiClient.put("/api/contributions/" + id, new StoryRequest(title, content, tags), Story.class);
+    public static Story updateStory(long id, String title, String content, String tags, String date,
+                                    String place, Double latitude, Double longitude) {
+        return ApiClient.put("/api/contributions/" + id,
+                new StoryRequest(title, content, tags, date, place, latitude, longitude), Story.class);
     }
 
     public static void deleteStory(long id) {
         ApiClient.delete("/api/contributions/" + id, Void.class);
+    }
+
+    public static void uploadStoryImage(long id, String contentType, byte[] data) {
+        ApiClient.put("/api/contributions/" + id + "/image",
+                new ImageUpload(contentType, data), Story.class);
+    }
+
+    public static byte[] storyImage(long id) {
+        return ApiClient.getBytes("/api/contributions/" + id + "/image");
     }
 
     public static java.util.List<HistoricalRecord> listHistoricalRecords() {

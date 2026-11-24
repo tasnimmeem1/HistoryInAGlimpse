@@ -10,6 +10,11 @@ public record Story(
         String title,
         String content,
         String tags,
+        String historicalDate,
+        String placeName,
+        Double latitude,
+        Double longitude,
+        boolean hasImage,
         @JsonAlias("created_at") String createdAt,
         @JsonAlias("updated_at") String updatedAt) {
 }
