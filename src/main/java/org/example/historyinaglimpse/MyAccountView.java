@@ -26,6 +26,12 @@ public final class MyAccountView extends StackPane {
         TextField displayName = new TextField(Session.displayName());
         displayName.setId("account-display-name");
         Label nameMessage = message("account-name-message");
+        Session.async(Session::refreshProfile, user -> {
+                    who.setText("Username: " + user.username() + " · " + user.role().label()
+                            + (user.google() ? " · Linked to Google" : ""));
+                    displayName.setText(Session.displayName());
+                },
+                error -> LoginView.showError(nameMessage, error));
         Button saveName = new Button("Save name");
         saveName.setId("account-save-name");
         saveName.getStyleClass().add("primary-button");
@@ -33,7 +39,8 @@ public final class MyAccountView extends StackPane {
             if (displayName.getText().isBlank()) { LoginView.showError(nameMessage, "Enter a display name."); return; }
             saveName.setDisable(true);
             Session.async(() -> Session.updateDisplayName(displayName.getText()),
-                    user -> { showNotice(nameMessage, "Saved."); saveName.setDisable(false); },
+                    user -> { who.setText("Username: " + user.username() + " · " + user.role().label()
+                            + (user.google() ? " · Linked to Google" : "")); showNotice(nameMessage, "Saved."); saveName.setDisable(false); },
                     error -> { LoginView.showError(nameMessage, error); saveName.setDisable(false); });
         });
 

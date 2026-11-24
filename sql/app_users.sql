@@ -51,3 +51,14 @@ create table if not exists public.shared_stories (
 
 alter table public.shared_stories enable row level security;
 notify pgrst, 'reload schema';
+
+-- Per-account bookmarks of records from the public, read-only timeline catalog.
+create table if not exists public.saved_selections (
+    username  text not null references public.app_users(username) on delete cascade,
+    record_id text not null,
+    saved_at  timestamptz not null default now(),
+    primary key (username, record_id)
+);
+
+alter table public.saved_selections enable row level security;
+notify pgrst, 'reload schema';

@@ -316,7 +316,7 @@ public class HistoryInAGlimpseApplication extends Application {
                 Role.USER, StoryView::new);
         navigator.addScreen("saved", "Saved history & reports",
                 "Bookmarks, saved selections, and reports you can preview and export.",
-                Role.USER, () -> Navigator.placeholder("Saved history & reports"));
+                Role.USER, SavedHistoryView::new);
         navigator.addScreen("account", "My account",
                 "Change your display name or password.",
                 Role.USER, MyAccountView::new);

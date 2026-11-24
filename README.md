@@ -70,9 +70,11 @@ The app opens on the splash screen, then the login screen. People can log in, cr
 | USER | anyone who registers | timeline, shared stories, saved history and reports |
 | ADMIN | promoted by another admin, or in the database for the first one | everything, plus Manage accounts |
 
-Database setup: run `sql/app_users.sql` in the Supabase SQL editor. Running it again is safe, and it upgrades a table made by an older copy of the script. This creates both the account table and the shared-stories table. To make an admin, register normally, then run `update public.app_users set role = 'ADMIN' where username = '...';`.
+Database setup: run `sql/app_users.sql` in the Supabase SQL editor. Running it again is safe, and it upgrades a table made by an older copy of the script. This creates the account, shared-stories, and saved-selections tables. To make an admin, register normally, then run `update public.app_users set role = 'ADMIN' where username = '...';`.
 
 Signed-in users can share stories with a title, body, and optional comma-separated tags from **Shared stories**. Everyone signed in can read the shared list; authors can edit or delete only their own submissions.
+
+The backend exposes the public timeline catalog at `GET /api/historical-records` and `GET /api/historical-records/{id}`. Contributions are available at `/api/contributions` (the `/api/stories` routes remain as aliases), and the signed-in profile can be read or updated at `/api/profiles/me` (the `/api/auth/me` routes remain supported). Saved timeline selections are account-specific at `GET`, `POST`, and `DELETE /api/saved-selections`. The **Saved history & reports** screen searches the server catalog and syncs bookmarks to Supabase.
 
 Backend endpoints (all JSON):
 - `POST /api/auth/register` with `{"username", "displayName", "password"}`
