@@ -36,3 +36,18 @@ notify pgrst, 'reload schema';
 
 -- To make someone an admin after they register:
 -- update public.app_users set role = 'ADMIN' where username = 'their_name';
+
+-- Stories shared between registered users. The backend enforces author-only edits and deletes.
+create table if not exists public.shared_stories (
+    id                  bigint generated always as identity primary key,
+    author_username     text not null references public.app_users(username) on delete cascade,
+    author_display_name text not null,
+    title               text not null check (char_length(title) between 1 and 120),
+    content             text not null check (char_length(content) between 1 and 10000),
+    tags                text not null default '' check (char_length(tags) <= 200),
+    created_at          timestamptz not null default now(),
+    updated_at          timestamptz not null default now()
+);
+
+alter table public.shared_stories enable row level security;
+notify pgrst, 'reload schema';

@@ -55,6 +55,10 @@ public final class ApiClient {
         }
     }
 
+    public static <T> T delete(String path, Class<T> type) {
+        return send(request(path, Session.token()).DELETE(), type);
+    }
+
     /** POST with a specific token instead of the current session's. */
     static <T> T post(String path, Object body, Class<T> type, String token) {
         try {

@@ -16,6 +16,9 @@ public final class Session {
     public record ProfileRequest(String displayName) { }
     public record PasswordRequest(String currentPassword, String newPassword) { }
     public record RoleRequest(Role role) { }
+    public record Story(Long id, String authorUsername, String authorDisplayName, String title,
+                        String content, String tags, String createdAt, String updatedAt) { }
+    public record StoryRequest(String title, String content, String tags) { }
 
     private static volatile User user;
     private static volatile String token;
@@ -79,6 +82,22 @@ public final class Session {
     public static User setRole(String username, Role role) {
         return ApiClient.put("/api/admin/users/" + java.net.URLEncoder.encode(username, java.nio.charset.StandardCharsets.UTF_8)
                 + "/role", new RoleRequest(role), User.class);
+    }
+
+    public static java.util.List<Story> listStories() {
+        return java.util.List.of(ApiClient.get("/api/stories", Story[].class));
+    }
+
+    public static Story createStory(String title, String content, String tags) {
+        return ApiClient.post("/api/stories", new StoryRequest(title, content, tags), Story.class);
+    }
+
+    public static Story updateStory(long id, String title, String content, String tags) {
+        return ApiClient.put("/api/stories/" + id, new StoryRequest(title, content, tags), Story.class);
+    }
+
+    public static void deleteStory(long id) {
+        ApiClient.delete("/api/stories/" + id, Void.class);
     }
 
     /** Forgets the user right away and tells the backend in the background. */

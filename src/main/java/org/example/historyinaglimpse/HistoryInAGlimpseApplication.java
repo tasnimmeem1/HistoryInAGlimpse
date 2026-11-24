@@ -306,17 +306,14 @@ public class HistoryInAGlimpseApplication extends Application {
     }
 
 
-    /**
-     * Main-menu entries. Teammates replace their placeholder with their own
-     * screen, e.g. navigator.addScreen("stories", ..., Role.USER, StoryListView::new).
-     */
+    /** Main-menu entries for the desktop features. */
     private void registerFeatures() {
         navigator.addFeature(new Navigator.Feature("timeline", "Explore the timeline",
                 "Browse the illustrated chart of world history and open animated scenes.",
                 Role.GUEST, this::showChart));
         navigator.addScreen("stories", "Shared stories",
                 "Read, search and share stories with tags and timestamps.",
-                Role.USER, () -> Navigator.placeholder("Shared stories"));
+                Role.USER, StoryView::new);
         navigator.addScreen("saved", "Saved history & reports",
                 "Bookmarks, saved selections, and reports you can preview and export.",
                 Role.USER, () -> Navigator.placeholder("Saved history & reports"));
