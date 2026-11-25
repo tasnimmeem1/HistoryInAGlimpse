@@ -7,6 +7,14 @@ spring:
     error:
       # Send error reasons to the desktop app (shown on the login form).
       include-message: always
+  datasource:
+    url: jdbc:h2:file:${user.home}/history-in-a-glimpse-stories;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  sql:
+    init:
+      mode: always
 
 supabase:
   url: https://seqwvzedxfqeytscrwsr.supabase.co

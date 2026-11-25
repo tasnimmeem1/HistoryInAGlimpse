@@ -16,6 +16,17 @@ public final class Session {
     public record ProfileRequest(String displayName) { }
     public record PasswordRequest(String currentPassword, String newPassword) { }
     public record RoleRequest(Role role) { }
+    public record HistoricalRecord(String id, String title, int year, int lane, String date,
+                                   String description, String source) { }
+    public record SavedSelection(String recordId, String savedAt) { }
+    public record SaveSelectionRequest(String recordId) { }
+    public record Story(Long id, String authorUsername, String authorDisplayName, String title,
+                        String content, String tags, String historicalDate, String placeName,
+                        Double latitude, Double longitude, boolean hasImage,
+                        String createdAt, String updatedAt) { }
+    public record StoryRequest(String title, String content, String tags, String historicalDate,
+                               String placeName, Double latitude, Double longitude) { }
+    public record ImageUpload(String contentType, byte[] data) { }
 
     private static volatile User user;
     private static volatile String token;
@@ -58,7 +69,12 @@ public final class Session {
 
     /** Blocking: changes the current user's display name. */
     public static User updateDisplayName(String displayName) {
-        user = ApiClient.put("/api/auth/me", new ProfileRequest(displayName), User.class);
+        user = ApiClient.put("/api/profiles/me", new ProfileRequest(displayName), User.class);
+        return user;
+    }
+
+    public static User refreshProfile() {
+        user = ApiClient.get("/api/profiles/me", User.class);
         return user;
     }
 
@@ -79,6 +95,51 @@ public final class Session {
     public static User setRole(String username, Role role) {
         return ApiClient.put("/api/admin/users/" + java.net.URLEncoder.encode(username, java.nio.charset.StandardCharsets.UTF_8)
                 + "/role", new RoleRequest(role), User.class);
+    }
+
+    public static java.util.List<Story> listStories() {
+        return java.util.List.of(ApiClient.get("/api/contributions", Story[].class));
+    }
+
+    public static Story createStory(String title, String content, String tags, String date,
+                                    String place, Double latitude, Double longitude) {
+        return ApiClient.post("/api/contributions",
+                new StoryRequest(title, content, tags, date, place, latitude, longitude), Story.class);
+    }
+
+    public static Story updateStory(long id, String title, String content, String tags, String date,
+                                    String place, Double latitude, Double longitude) {
+        return ApiClient.put("/api/contributions/" + id,
+                new StoryRequest(title, content, tags, date, place, latitude, longitude), Story.class);
+    }
+
+    public static void deleteStory(long id) {
+        ApiClient.delete("/api/contributions/" + id, Void.class);
+    }
+
+    public static void uploadStoryImage(long id, String contentType, byte[] data) {
+        ApiClient.put("/api/contributions/" + id + "/image",
+                new ImageUpload(contentType, data), Story.class);
+    }
+
+    public static byte[] storyImage(long id) {
+        return ApiClient.getBytes("/api/contributions/" + id + "/image");
+    }
+
+    public static java.util.List<HistoricalRecord> listHistoricalRecords() {
+        return java.util.List.of(ApiClient.get("/api/historical-records", HistoricalRecord[].class));
+    }
+
+    public static java.util.List<SavedSelection> listSavedSelections() {
+        return java.util.List.of(ApiClient.get("/api/saved-selections", SavedSelection[].class));
+    }
+
+    public static SavedSelection saveSelection(String recordId) {
+        return ApiClient.post("/api/saved-selections", new SaveSelectionRequest(recordId), SavedSelection.class);
+    }
+
+    public static void removeSelection(String recordId) {
+        ApiClient.delete("/api/saved-selections/" + recordId, Void.class);
     }
 
     /** Forgets the user right away and tells the backend in the background. */

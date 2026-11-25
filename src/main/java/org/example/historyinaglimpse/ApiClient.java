@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -53,6 +54,31 @@ public final class ApiClient {
         } catch (IOException ex) {
             throw new ApiException(0, "Could not prepare the request.");
         }
+    }
+
+    public static <T> T delete(String path, Class<T> type) {
+        return send(request(path, Session.token()).DELETE(), type);
+    }
+
+    public static <T> T putBytes(String path, byte[] body, Class<T> type) {
+        return send(request(path, Session.token()).header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofByteArray(body)), type);
+    }
+
+    public static byte[] getBytes(String path) {
+        HttpResponse<byte[]> response;
+        try {
+            response = HTTP.send(request(path, Session.token()).GET().build(), HttpResponse.BodyHandlers.ofByteArray());
+        } catch (IOException ex) {
+            throw new ApiException(0, "Cannot reach the server. Is the backend running?");
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ApiException(0, "The request was interrupted.");
+        }
+        if (response.statusCode() >= 400)
+            throw new ApiException(response.statusCode(),
+                    errorMessage(new String(response.body(), StandardCharsets.UTF_8), response.statusCode()));
+        return response.body();
     }
 
     /** POST with a specific token instead of the current session's. */
